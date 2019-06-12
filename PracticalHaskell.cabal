@@ -1,0 +1,358 @@
+name:           PracticalHaskell
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/githubuser/PracticalHaskell#readme>
+homepage:       https://github.com/jhb563/PracticalHaskell#readme
+bug-reports:    https://github.com/jhb563/PracticalHaskell/issues
+author:         James Bowen
+maintainer:     james@mondaymorninghaskell.me
+copyright:      2019 Monday Morning Haskell
+license:        OtherLicense
+license-file:   LICENSE
+build-type:     Simple
+cabal-version:  >= 1.10
+extra-source-files:
+    README.md
+
+source-repository head
+  type: git
+  location: https://github.com/jhb563/PracticalHaskell
+
+library
+  exposed-modules:
+      Database
+      Schema
+      SchemaTypes
+      -- Lecture4
+      -- Lecture5
+      -- Lecture6
+      Lecture7
+      Lecture8
+      Lecture9
+      Lecture10
+      Lecture11
+  other-modules:
+      Paths_PracticalHaskell
+  hs-source-dirs:
+      src
+  build-depends:
+      base >=4.7 && <5
+    , aeson
+    , esqueleto
+    , monad-logger
+    , mtl
+    , persistent
+    , persistent-migration
+    , persistent-postgresql
+    , persistent-template
+    , text
+    , time
+    , vector
+  default-language: Haskell2010
+
+executable migrate-db
+  main-is: MigrateDB.hs
+  hs-source-dirs:
+    app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , PracticalHaskell
+  default-language: Haskell2010
+
+test-suite lecture-2-tests
+  type:                exitcode-stdio-1.0
+  hs-source-dirs:      test
+  main-is:             Lecture2Tests.hs
+  other-modules:
+      BasicTypes
+    , PGUtils
+  build-depends:       base
+                     , postgresql-simple
+                     , sqlite-simple
+                     , tasty
+                     , tasty-hunit
+                     , time
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  default-language:    Haskell2010
+
+test-suite lecture-3-tests
+  type:                exitcode-stdio-1.0
+  hs-source-dirs:      test
+  main-is:             Lecture3Tests.hs
+  other-modules:
+  build-depends:       base
+                     , monad-logger
+                     , persistent
+                     , persistent-postgresql
+                     , tasty
+                     , tasty-hunit
+                     , time
+                     , PracticalHaskell
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  default-language:    Haskell2010
+
+test-suite lecture-4-tests
+  type:                exitcode-stdio-1.0
+  hs-source-dirs:      test
+  main-is:             Lecture4Tests.hs
+  other-modules:
+    TestUtils
+  build-depends:       base
+                     , directory
+                     , persistent
+                     , tasty
+                     , tasty-hunit
+                     , PracticalHaskell
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  default-language:    Haskell2010
+
+test-suite lecture-5-tests
+  type:                exitcode-stdio-1.0
+  hs-source-dirs:      test
+  main-is:             Lecture5Tests.hs
+  build-depends:       base
+                     , persistent
+                     , tasty
+                     , tasty-hunit
+                     , text
+                     , time
+                     , PracticalHaskell
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  default-language:    Haskell2010
+
+test-suite lecture-6-tests
+  type:                exitcode-stdio-1.0
+  hs-source-dirs:      test
+  main-is:             Lecture6Tests.hs
+  build-depends:       base
+                     , tasty
+                     , tasty-hunit
+                     , PracticalHaskell
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  default-language:    Haskell2010
+
+test-suite lecture-7-tests
+  type:                exitcode-stdio-1.0
+  hs-source-dirs:      test
+  main-is:             Lecture7Tests.hs
+  other-modules:
+      DatabaseTestUtils
+  build-depends:       base
+                     , monad-logger
+                     , persistent
+                     , tasty
+                     , tasty-hunit
+                     , text
+                     , time
+                     , PracticalHaskell
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  default-language:    Haskell2010
+
+test-suite lecture-8-tests
+  type:                exitcode-stdio-1.0
+  hs-source-dirs:      test
+  main-is:             Lecture8Tests.hs
+  other-modules:
+    DatabaseTestUtils
+  build-depends:       base
+                     , monad-logger
+                     , persistent
+                     , tasty
+                     , tasty-hunit
+                     , text
+                     , time
+                     , PracticalHaskell
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  default-language:    Haskell2010
+
+test-suite lecture-9-tests
+  type:                exitcode-stdio-1.0
+  hs-source-dirs:      test
+  main-is:             Lecture9Tests.hs
+  build-depends:       base
+                     , aeson
+                     , persistent
+                     , tasty
+                     , tasty-hunit
+                     , text
+                     , time
+                     , PracticalHaskell
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  default-language:    Haskell2010
+
+test-suite lecture-10-tests
+  type:                exitcode-stdio-1.0
+  hs-source-dirs:      test
+  main-is:             Lecture10Tests.hs
+  build-depends:       base
+                     , tasty
+                     , tasty-hunit
+                     , text
+                     , time
+                     , PracticalHaskell
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  default-language:    Haskell2010
+
+executable gen-users
+  main-is: UserGenerator.hs
+  hs-source-dirs:
+    app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , persistent
+    , random
+    , split
+    , text
+    , PracticalHaskell
+  default-language: Haskell2010
+
+executable gen-articles
+  main-is: ArticleGenerator.hs
+  hs-source-dirs:
+    app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , persistent
+    , random
+    , split
+    , text
+    , time
+    , PracticalHaskell
+  default-language: Haskell2010
+
+executable gen-comments
+  main-is: CommentGenerator.hs
+  hs-source-dirs:
+    app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , persistent
+    , random
+    , split
+    , text
+    , time
+    , PracticalHaskell
+  default-language: Haskell2010
+
+executable test-1
+  main-is: Test1.hs
+  hs-source-dirs:
+    app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , process
+  default-language: Haskell2010
+
+executable test-2
+  main-is: Test2.hs
+  hs-source-dirs:
+    app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , process
+  default-language: Haskell2010
+
+executable test-3
+  main-is: Test3.hs
+  hs-source-dirs:
+    app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , process
+  default-language: Haskell2010
+
+executable test-4
+  main-is: Test4.hs
+  hs-source-dirs:
+    app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , process
+  default-language: Haskell2010
+
+executable test-5
+  main-is: Test5.hs
+  hs-source-dirs:
+    app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , process
+  default-language: Haskell2010
+
+executable test-6
+  main-is: Test6.hs
+  hs-source-dirs:
+    app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , process
+  default-language: Haskell2010
+
+executable test-7
+  main-is: Test7.hs
+  hs-source-dirs:
+    app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , process
+  default-language: Haskell2010
+
+executable test-8
+  main-is: Test8.hs
+  hs-source-dirs:
+    app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , process
+  default-language: Haskell2010
+
+executable test-9
+  main-is: Test9.hs
+  hs-source-dirs:
+    app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , process
+  default-language: Haskell2010
+
+executable test-10
+  main-is: Test10.hs
+  hs-source-dirs:
+    app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , process
+  default-language: Haskell2010
+
+executable test-11
+  main-is: Test11.hs
+  hs-source-dirs:
+    app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , process
+  default-language: Haskell2010
+
+executable test-12
+  main-is: Test12.hs
+  hs-source-dirs:
+    app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , process
+  default-language: Haskell2010
