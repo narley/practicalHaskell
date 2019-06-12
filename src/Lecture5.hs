@@ -34,7 +34,6 @@ fetch100 = do
     -- fetchQuery :: ???
     fetchQuery = undefined
 
--- TODO UNCOMMENT ME!
 lastYearsArticles :: IO [Entity Article]
 lastYearsArticles = runAction localConnString query
   where
