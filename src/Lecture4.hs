@@ -1,5 +1,8 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module Lecture4 where
 
+import Data.Time.Clock.POSIX (posixSecondsToUTCTime)
 import Database.Persist (Entity(..), selectList)
 import Database.Persist.Sql (toSqlKey, fromSqlKey)
 import System.IO (Handle, hPrint)
@@ -23,4 +26,4 @@ fetchAllUsers :: IO [Entity User]
 fetchAllUsers = runAction localConnString $ selectList [] []
 
 printAllKeys :: Handle -> IO ()
-printAllKeys = undefined
+printAllKeys handle = undefined

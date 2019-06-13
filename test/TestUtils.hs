@@ -1,9 +1,9 @@
 module TestUtils where
 
 import System.Directory (removeFile)
-import System.IO (openFile, IOMode(..))
+import System.IO (openFile, IOMode(..), Handle, hClose, hGetContents)
 
-import Test.Tasty.HUnit (Assertion)
+import Test.Tasty.HUnit (Assertion, (@?=))
 
 -- | Test that an IO action prints out exactly the set of lines
 -- we expect it to. The action must take a handle. We'll pass a

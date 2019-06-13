@@ -21,7 +21,7 @@ myUserTests = testCase "My User Tests" $ do
   (fromSqlKey . entityKey) myUserEntity @?= 1
 
 myArticleTests :: TestTree
-myArticleTests = testCase "My Article Tests" $
+myArticleTests = testCase "My Article Tests" $ do
   articleTitle myArticle @?= "Intro to Haskell"
   (fromSqlKey . entityKey) myArticleEntity @?= 1
 
