@@ -3,10 +3,11 @@
 module Lecture5 where
 
 import Control.Monad.Logger (LoggingT)
+import Data.Maybe (fromJust)
 import Data.Text (Text)
-import Data.Time (UTCTime)
+import Data.Time (UTCTime(..), Day(..))
 import Database.Persist (insert, delete, get, selectList, Key, (<.), SelectOpt(..))
-import Database.Persist.Postgresql (SqlPersistT, Entity(..))
+import Database.Persist.Postgresql (SqlPersistT, Entity(..), toSqlKey, (>.), (<.), (==.))
 
 import Database (runAction, localConnString)
 import Schema

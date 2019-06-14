@@ -3,6 +3,7 @@
 module Main where
 
 import Data.Int (Int64)
+import Data.List (sortBy)
 import Data.Text (Text)
 import Data.Time.Clock.POSIX (posixSecondsToUTCTime)
 import Database.Persist.Sql (toSqlKey, entityKey, Entity(..))
@@ -19,12 +20,15 @@ main = defaultMain $ testGroup "Lecture 5 Tests"
 fetch100Test :: TestTree
 fetch100Test = testCase "Fetch 100 Test" $ do
   info <- fetch100
-  info @?= ("Apply These 5 Secret Techniques to Improve PROGRAMMING HASKELL", posixSecondsToUTCTime 1539272498)
+  fst info @?= "Apply These 5 Secret Techniques To Improve PROGRAMMING HASKELL"
+  snd info @?= posixSecondsToUTCTime 1539272498
 
 lastYearsArticlesTest :: TestTree
 lastYearsArticlesTest = testCase "Last Year's Articles Test" $ do
   articles <- lastYearsArticles
-  articles @?= expectedArticles
+  let trueArticles = sortBy sortByTitle expectedArticles
+  length articles @?= length trueArticles
+  mapM_ (\(a1, a2) -> entityKey a1 @?= entityKey a2) (zip articles trueArticles)
 
 getYoungUsersTest :: TestTree
 getYoungUsersTest = testCase "Get Young Users Test" $ do
@@ -35,11 +39,14 @@ mkArticleEntity :: (Int64, Text, Text, Integer) -> Entity Article
 mkArticleEntity (id_, title, body, time) =
   Entity (toSqlKey id_) (Article title body (posixSecondsToUTCTime (fromInteger time)))
 
+sortByTitle :: Entity Article -> Entity Article -> Ordering
+sortByTitle (Entity _ a1) (Entity _ a2) = compare (articleTitle a1) (articleTitle a2)
+
 expectedArticles :: [Entity Article]
 expectedArticles = mkArticleEntity <$>
   [ (2,"You Don't Have To Be A Big Corporation To Start PROGRAMMING HASKELL","WRITING CODE Is Essential For Your Success. Read This To Find Out Why",1536627837)
   , (7,"What You Should Have Asked Your Teachers About PROGRAMMING HASKELL","Don't Be Fooled By WRITING CODE",1519475985)
-  , (9,"3 Ways To Have  , (A) More Appealing PROGRAMMING HASKELL","Essential WRITING CODE Smartphone Apps",1533367094)
+  , (9,"3 Ways To Have (A) More Appealing PROGRAMMING HASKELL","Essential WRITING CODE Smartphone Apps",1533367094)
   , (10,"4 Ways You Can Grow Your Creativity Using PROGRAMMING HASKELL","How To Take The Headache Out Of WRITING CODE",1525666889)
   , (11,"What Everyone Must Know About PROGRAMMING HASKELL","Don't Just Sit There! Start WRITING CODE",1515148424)
   , (13,"PROGRAMMING HASKELL Your Way To Success","The Best Way To WRITING CODE",1529202282)
@@ -64,7 +71,7 @@ expectedArticles = mkArticleEntity <$>
   , (56,"How To Win Friends And Influence People with PROGRAMMING HASKELL","How WRITING CODE Made Me A Better Salesperson",1516504234)
   , (57,"Who Else Wants To Know The Mystery Behind PROGRAMMING HASKELL?","Winning Tactics For WRITING CODE",1520253019)
   , (59,"11 Methods Of PROGRAMMING HASKELL Domination","5 Ways Of WRITING CODE That Can Drive You Bankrupt - Fast!",1525238692)
-  , (61,"10 Tips That Will Make You Influential In PROGRAMMING HASKELL","The Number One Reason You Should  , (Do) WRITING CODE",1536774102)
+  , (61,"10 Tips That Will Make You Influential In PROGRAMMING HASKELL","The Number One Reason You Should (Do) WRITING CODE",1536774102)
   , (64,"Fall In Love With PROGRAMMING HASKELL","WRITING CODE: An Incredibly Easy Method That Works For All",1531204199)
   , (65,"Death, PROGRAMMING HASKELL And Taxes","Here Is A Quick Cure For WRITING CODE",1545380834)
   , (66,"Why I Hate PROGRAMMING HASKELL","3 WRITING CODE Secrets You Never Knew",1532069294)
