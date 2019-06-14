@@ -5,8 +5,10 @@ module Lecture6 where
 import Control.Monad (forM_)
 import Control.Monad.Logger (runStdoutLoggingT, LoggingT, LogLevel(..), filterLogger)
 import Control.Monad.Reader (runReaderT)
+import Data.List (sortBy)
 import Database.Persist (Entity(..), (<.), (>.), (==.), selectList, Filter(..), SelectOpt(..))
-import Database.Persist.Postgresql (withPostgresqlConn, ConnectionString, SqlPersistT)
+import Database.Persist.Postgresql (withPostgresqlConn, ConnectionString, SqlPersistT, fromSqlKey)
+import qualified Data.Text as T
 
 import Database (localConnString)
 import Schema
