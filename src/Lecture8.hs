@@ -1,8 +1,12 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module Lecture8 where
 
 import Control.Monad.Logger (LoggingT)
+import Data.Time (UTCTime(..), Day(..))
 import Database.Persist (Entity(..), Key)
 import Database.Persist.Postgresql (SqlPersistT)
+import Database.Esqueleto
 
 import Database
 import Schema
@@ -17,7 +21,7 @@ getSpecialPairs :: SqlPersistT (LoggingT IO) [(Entity User, Entity Article)]
 getSpecialPairs = undefined
 
 getCommentsFromUser :: Key User -> SqlPersistT (LoggingT IO) [Entity Comment]
-getCommentsFromUser = undefined
+getCommentsFromUser userId = undefined
 
 getCommentsOnUser :: Key User -> SqlPersistT (LoggingT IO) [Entity Comment]
-getCommentsOnUser = undefined
+getCommentsOnUser userId = undefined
