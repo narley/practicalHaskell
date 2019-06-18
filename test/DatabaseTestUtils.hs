@@ -17,7 +17,12 @@ rq = runAction localConnString
 
 mkComment :: (Int64, Int64, Int64, Integer, Text) -> Entity Comment
 mkComment (cid, uid, aid, ts, body) = Entity (toSqlKey cid) $
-  Comment body (toSqlKey uid) (toSqlKey aid) (posixSecondsToUTCTime (fromInteger ts))
+  Comment 
+    { commentBody = body
+    , commentUserId = (toSqlKey uid)
+    , commentArticleId = (toSqlKey aid)
+    , commentSubmittedAt = (posixSecondsToUTCTime (fromInteger ts))
+    }
 
 -- Test Solutions (used in Lecture7Tests and Lecture8Tests)
 trueComments1 :: [Entity Comment]

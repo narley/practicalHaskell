@@ -15,7 +15,7 @@ main = defaultMain $ testGroup "Lecture 7 Tests"
   [commentsFromUserTests, commentsOnUserTests]
 
 commentsFromUserTests :: TestTree
-commentsFromUserTests = testCase "Comments On User Tests" $ do
+commentsFromUserTests = testCase "Comments For User Tests" $ do
   comments1 <- rq (getCommentsFromUser (toSqlKey 2))
   comments2 <- rq (getCommentsFromUser (toSqlKey 5))
   comments3 <- rq (getCommentsFromUser (toSqlKey 37))
