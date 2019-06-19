@@ -1,8 +1,11 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module Lecture11 where
 
+import Data.Int (Int64)
 import Database.Persist.Migration
 import Database.Persist.Migration.Postgres (runMigration)
-import Database.Persist.Sql (Key, toSqlKey, get, insert)
+import Database.Persist.Sql (Key, toSqlKey, get, insert, Single(..))
 import Data.Time.Clock.POSIX (posixSecondsToUTCTime)
 
 import Database (runAction, localConnString)
