@@ -2,10 +2,9 @@
 
 module Main where
 
-import Data.Aeson
 import Data.Int (Int64)
 import Data.Time.Clock.POSIX (posixSecondsToUTCTime)
-import Database.Persist.Sql (toSqlKey)
+import Database.Persist.Sql (toSqlKey, insert)
 import Test.Tasty (defaultMain, testGroup, TestTree)
 import Test.Tasty.HUnit (testCase, (@?=))
 

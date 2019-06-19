@@ -1,9 +1,11 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module Lecture10 where
 
 import Control.Monad.IO.Class (liftIO)
 import Data.Int (Int64)
 import Data.Time.Clock.POSIX (posixSecondsToUTCTime)
-import Database.Persist (insert, get, delete, selectList)
+import Database.Persist (insert, get, delete, selectList, Entity(..), SelectOpt(..))
 import Database.Persist.Sql (toSqlKey)
 
 import Database (runAction, localConnString)
@@ -41,4 +43,12 @@ deleteNewReaction key = runAction localConnString $
   delete (toSqlKey key :: Key ArticleReaction)
 
 makeClone :: IO ()
-makeClone = runAction localConnString undefined
+makeClone = do
+  [Entity _ user] <- runAction localConnString (selectList [] [LimitTo 1])
+  newKey <- runAction localConnString $
+    insert (User ("Bob") (userEmail user) (userAge user))
+  print newKey
+
+deleteNewUser :: Int64 -> IO ()
+deleteNewUser key = runAction localConnString $
+  delete (toSqlKey key :: Key User)

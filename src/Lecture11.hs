@@ -33,7 +33,7 @@ runDoubleMigration = runAction localConnString $ do
 
 insertSurprised :: IO (Key ArticleReaction)
 insertSurprised = runAction localConnString $ do
-  insert (ArticleReaction Nothing (toSqlKey undefined) (undefined)
+  insert (ArticleReaction (toSqlKey undefined) Nothing (undefined)
     (Metadata (posixSecondsToUTCTime 0) 0 0 0))
 
 fetchSurprised :: IO (Maybe ArticleReaction)
