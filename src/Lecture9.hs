@@ -3,6 +3,7 @@
 module Lecture9 where
 
 import Data.Aeson
+import Database.Persist.Sql (toSqlKey, fromSqlKey)
 
 import Schema
 

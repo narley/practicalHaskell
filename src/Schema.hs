@@ -11,10 +11,12 @@ module Schema where
 
 import qualified Database.Persist.TH as PTH
 import           Data.Aeson (ToJSON(..), FromJSON(..), Value(..), (.=), object, (.:), withObject, withArray)
-import           Data.Aeson.TH (deriveJSON, defaultOptions)
-import           Database.Persist.Sql (Key, Entity(..), fromSqlKey)
+import           Data.Aeson.TH (deriveJSON, defaultOptions, Options(..))
+import           Database.Persist.Sql (Key, Entity(..), fromSqlKey, toSqlKey)
 import           Data.Text (Text)
 import           Data.Time (UTCTime)
+
+import           Utils (dropXAndLowerFirst)
 
 import SchemaTypes
 

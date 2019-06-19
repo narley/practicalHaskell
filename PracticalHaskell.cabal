@@ -30,6 +30,7 @@ library
       -- Lecture9
       -- Lecture10
       -- Lecture11
+      Utils
   other-modules:
       Paths_PracticalHaskell
   hs-source-dirs:

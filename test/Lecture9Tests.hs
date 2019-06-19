@@ -96,17 +96,19 @@ commentJSONBasicTests = testCase "Comment JSON Basic Tests" $ do
 
 comment1 :: Comment
 comment1 = Comment
-  "This was a good read."
-  (toSqlKey 3)
-  (toSqlKey 2)
-  (posixSecondsToUTCTime 1553119945)
+  { commentBody = "This was a good read."
+  , commentUserId = (toSqlKey 3)
+  , commentArticleId = (toSqlKey 2)
+  , commentSubmittedAt = (posixSecondsToUTCTime 1553119945)
+  }
 
 comment2 :: Comment
 comment2 = Comment
-  "This article was fine."
-  (toSqlKey 8)
-  (toSqlKey 4)
-  (posixSecondsToUTCTime 1553120945)
+  { commentBody = "This article was fine."
+  , commentUserId = (toSqlKey 8)
+  , commentArticleId = (toSqlKey 4)
+  , commentSubmittedAt = (posixSecondsToUTCTime 1553120945)
+  }
 
 commentJSON1 :: Value
 commentJSON1 = object
