@@ -1,14 +1,47 @@
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TypeOperators #-}
+
 module Main where
 
-import Test.Tasty (defaultMain, testGroup, TestTree)
-import Test.Tasty.HUnit (testCase, (@?=))
+import Control.Concurrent (forkIO, killThread, threadDelay)
+import Data.Maybe (fromMaybe)
+import Data.Text (Text)
+import Network.HTTP.Client (newManager)
+import Network.HTTP.Client.TLS (tlsManagerSettings)
+import System.Environment (lookupEnv)
+import Servant.API
+import Servant.Client (ClientEnv(..), parseBaseUrl, runClientM, client, ClientM)
+import Test.Hspec
+
+import BasicServer (runServer, basicAPI)
 
 main :: IO ()
 main = do
-  defaultMain $ testGroup "Lecture 2 Tests"
-    [ testTemplate
-    ]
+  tid <- forkIO runServer
+  threadDelay 1000000
+  manager <- newManager tlsManagerSettings
+  serverPort <- lookupEnv "BASIC_SERVER_PORT"
+  baseUrl <- parseBaseurl ("http://127.0.0.1:" ++ fromMaybe "8080" serverPort)
+  let clientEnv = ClientEnv manager baseUrl
+  hspec $ envVarSpec serverPort
+  hspec $ before (fetchNewItems clientEnv) testSpec
+  killThread tid
 
-testTemplate :: TestTree
-testTemplate = testCase "Template" $ do
-  True @?= True
+envVarSpec :: Maybe String -> Spec
+envVarSpec serverPort = it "Should fetch the basic server port environment variable" $
+  serverPort `shouldBe` Just "8080"
+
+fetchNewItems :: ClientEnv -> IO (Text, Int)
+fetchNewItems clientEnv = runClientM $ do
+  librariesResponse <- fetchLibariesClient
+  numUsersResponse <- fetchNumUsersClient
+  return (librariesResponse, numUsersResponse)
+
+testSpec :: SpecWith (Text, Int)
+testSpec = it "Should fetch the proper info on new endpoints" $ \(libraries, numUsers) -> do
+  libraries `shouldBe` "This server uses Servant"
+  numUsers `shouldBe` 1
+
+fetchLibrariesClient :: ClientM Text
+fetchNumUsersClient :: ClientM Int
+(_ :<|> _ :<|> _ :<|> fetchLibrariesClient :<|> fetchNumUsersClient) = client basicAPI
