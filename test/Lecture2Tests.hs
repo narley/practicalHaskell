@@ -21,8 +21,8 @@ main = do
   threadDelay 1000000
   manager <- newManager tlsManagerSettings
   serverPort <- lookupEnv "BASIC_SERVER_PORT"
-  baseUrl <- parseBaseurl ("http://127.0.0.1:" ++ fromMaybe "8080" serverPort)
-  let clientEnv = ClientEnv manager baseUrl
+  baseUrl <- parseBaseUrl ("http://127.0.0.1:" ++ fromMaybe "8080" serverPort)
+  let clientEnv = ClientEnv manager baseUrl Nothing
   hspec $ envVarSpec serverPort
   hspec $ before (fetchNewItems clientEnv) testSpec
   killThread tid
@@ -32,8 +32,8 @@ envVarSpec serverPort = it "Should fetch the basic server port environment varia
   serverPort `shouldBe` Just "8080"
 
 fetchNewItems :: ClientEnv -> IO (Text, Int)
-fetchNewItems clientEnv = runClientM $ do
-  librariesResponse <- fetchLibariesClient
+fetchNewItems clientEnv = flip runClientM clientEnv $ do
+  librariesResponse <- fetchLibrariesClient
   numUsersResponse <- fetchNumUsersClient
   return (librariesResponse, numUsersResponse)
 

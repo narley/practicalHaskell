@@ -23,6 +23,7 @@ library
       Schema
       SchemaTypes
       BasicServer
+      BasicServerTypes
       Lecture3
       Lecture4
       Lecture5
@@ -33,6 +34,7 @@ library
       Lecture10
       Lecture11
       Utils
+      Screencast
   other-modules:
       Paths_PracticalHaskell
   hs-source-dirs:
@@ -40,7 +42,9 @@ library
   build-depends:
       base >=4.7 && <5
     , aeson
+    , containers
     , esqueleto
+    , http-api-data
     , monad-logger
     , mtl
     , persistent
@@ -96,14 +100,15 @@ test-suite lecture-3-tests
   hs-source-dirs:      test
   main-is:             Lecture3Tests.hs
   other-modules:
-  build-depends:       base
-                     , monad-logger
-                     , persistent
-                     , persistent-postgresql
-                     , tasty
-                     , tasty-hunit
-                     , time
-                     , PracticalHaskell
+  build-depends:
+      base
+    , hspec
+    , http-client
+    , http-client-tls
+    , servant
+    , servant-client
+    , text
+    , PracticalHaskell
   ghc-options:         -threaded -rtsopts -with-rtsopts=-N
   default-language:    Haskell2010
 
