@@ -10,7 +10,8 @@
 module Schema where
 
 import qualified Database.Persist.TH as PTH
-import           Data.Aeson (ToJSON(..), FromJSON(..), Value(..), (.=), object, (.:), withObject, withArray)
+import           Data.Aeson (ToJSON(..), FromJSON(..), Value(..), (.=), object, (.:), withObject, withArray, Object)
+import           Data.Aeson.Types (Parser, Pair)
 import           Data.Aeson.TH (deriveJSON, defaultOptions, Options(..))
 import           Database.Persist.Sql (Key, Entity(..), fromSqlKey, toSqlKey)
 import           Data.Text (Text)
@@ -52,48 +53,93 @@ PTH.share [PTH.mkPersist PTH.sqlSettings, PTH.mkMigrate "migrateAll"] [PTH.persi
 
 |]
 
+userPairs :: User -> [Pair]
+userPairs user =
+  [ "name" .= userName user
+  , "email" .= userEmail user
+  , "age" .= userAge user
+  ]
+
+parseUser :: Object -> Parser User
+parseUser o = do
+  name_ <- o .: "name"
+  email_ <- o .: "email"
+  age_ <- o .: "age"
+  return $ User name_ email_ age_
+
 instance ToJSON User where
-  toJSON user = object
-    [ "name" .= userName user
-    , "email" .= userEmail user
-    , "age" .= userAge user
-    ]
+  toJSON = object . userPairs
 
 instance FromJSON User where
+  parseJSON = withObject "User" parseUser
+
+instance ToJSON (Entity User) where
+  toJSON (Entity uid user) = object $ ("id" .= fromSqlKey uid) : userPairs user
+
+instance FromJSON (Entity User) where
   parseJSON = withObject "User" $ \o -> do
-    name_ <- o .: "name"
-    email_ <- o .: "email"
-    age_ <- o .: "age"
-    return $ User name_ email_ age_
+    user <- parseUser o
+    uid <- o .: "id"
+    return $ Entity (toSqlKey uid) user
 
-instance ToJSON Article where
-  toJSON article = object
-    [ "title" .= articleTitle article
-    , "body" .= articleBody article
-    , "publishedAt" .= articlePublishedAt article
-    , "authorId" .= (fromSqlKey (articleAuthorId article))
-    ]
+articlePairs :: Article -> [Pair]
+articlePairs article =
+  [ "title" .= articleTitle article
+  , "body" .= articleBody article
+  , "publishedAt" .= articlePublishedAt article
+  , "authorId" .= fromSqlKey (articleAuthorId article)
+  ]
 
-instance FromJSON Article where
-  parseJSON = withObject "Article" $ \o -> do
+parseArticle :: Object -> Parser Article
+parseArticle o = do
     title_ <- o .: "title"
     body_ <- o .: "body"
     publishedAt_ <- o .: "publishedAt"
     authorId_ <- o .: "authorId"
     return $ Article title_ body_ publishedAt_ (toSqlKey authorId_)
 
+instance ToJSON Article where
+  toJSON = object . articlePairs
+
+instance FromJSON Article where
+  parseJSON = withObject "Article" parseArticle
+
+instance ToJSON (Entity Article) where
+  toJSON (Entity aid article) = object $ ("id" .= fromSqlKey aid) : articlePairs article
+
+instance FromJSON (Entity Article) where
+  parseJSON = withObject "Article" $ \o -> do
+    article <- parseArticle o
+    aid <- o .: "id"
+    return $ Entity (toSqlKey aid) article
+
+commentPairs :: Comment -> [Pair]
+commentPairs comment =
+  [ "articleId" .= fromSqlKey (commentArticleId comment)
+  , "body" .= commentBody comment
+  , "submittedAt" .= commentSubmittedAt comment
+  , "userId" .= fromSqlKey (commentUserId comment)
+  ]
+
+parseComment :: Object -> Parser Comment
+parseComment o = do
+  userId_ <- o .: "userId"
+  body_ <- o .: "body"
+  submittedAt_ <- o .: "submittedAt"
+  articleId_ <- o .: "articleId"
+  return $ Comment (toSqlKey userId_) (toSqlKey articleId_) body_ submittedAt_
+
 instance ToJSON Comment where
-  toJSON comment = object
-    [ "articleId" .= (fromSqlKey (commentArticleId comment))
-    , "body" .= commentBody comment
-    , "submittedAt" .= commentSubmittedAt comment
-    , "userId" .= (fromSqlKey (commentUserId comment))
-    ]
+  toJSON = object . commentPairs
 
 instance FromJSON Comment where
+  parseJSON = withObject "Comment" parseComment
+
+instance ToJSON (Entity Comment) where
+  toJSON (Entity cid comment) = object $ ("id" .= fromSqlKey cid) : commentPairs comment
+
+instance FromJSON (Entity Comment) where
   parseJSON = withObject "Comment" $ \o -> do
-    userId_ <- o .: "userId"
-    body_ <- o .: "body"
-    submittedAt_ <- o .: "submittedAt"
-    articleId_ <- o .: "articleId"
-    return $ Comment (toSqlKey userId_) (toSqlKey articleId_) body_ submittedAt_
+    comment <- parseComment o
+    cid <- o .: "id"
+    return $ Entity (toSqlKey cid) comment
