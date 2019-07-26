@@ -17,6 +17,7 @@ import Test.Hspec
 
 import CrudServer (runServer, fullCRUD)
 import Schema
+import TestUtils (fromRight')
 
 main :: IO ()
 main = do
@@ -68,7 +69,7 @@ testSpec = describe "Calling the CRUD API gives the right results" $ do
     deleteArticleResult testResults `shouldBe` True
 
   it "Should retrieve the right number of comments" $ \testResults ->
-    fetchAllCommentsResult testResults `shouldBe` 100
+    fetchAllCommentsResult testResults `shouldBe` 200
   it "Should create the comment properly" $ \testResults ->
     createCommentResult testResults `shouldBe` True
   it "Should retrieve the comment properly" $ \testResults -> do
@@ -212,7 +213,3 @@ updateCommentClient :: Int64 -> Comment -> ClientM ()
  createCommentClient :<|>
  deleteCommentClient :<|>
  updateCommentClient) = client fullCRUD
-
-fromRight' :: Either a b -> b
-fromRight' (Right x) = x
-fromRight' (Left _) = undefined

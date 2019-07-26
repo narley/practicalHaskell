@@ -18,3 +18,7 @@ testIOPrint action expectedOutput = do
   hClose readHandle
   removeFile testFile
   output @?= expectedOutput
+
+fromRight' :: Either a b -> b
+fromRight' (Right x) = x
+fromRight' (Left _) = error "Tried to force a 'Right' when it was a 'Left'!"

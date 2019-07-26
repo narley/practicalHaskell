@@ -40,6 +40,7 @@ packages:
 # (e.g., acme-missiles-0.3)
 extra-deps:
   - esqueleto-2.6.0
+  - pwstore-fast-2.4.4
   - git: https://github.com/jhb563/persistent-migration.git
     commit: 9f9c5035efe
 

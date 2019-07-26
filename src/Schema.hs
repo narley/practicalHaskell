@@ -13,6 +13,7 @@ import qualified Database.Persist.TH as PTH
 import           Data.Aeson (ToJSON(..), FromJSON(..), Value(..), (.=), object, (.:), withObject, withArray, Object)
 import           Data.Aeson.Types (Parser, Pair)
 import           Data.Aeson.TH (deriveJSON, defaultOptions, Options(..))
+import           Data.ByteString (ByteString)
 import           Database.Persist.Sql (Key, Entity(..), fromSqlKey, toSqlKey)
 import           Data.Text (Text)
 import           Data.Time (UTCTime)
@@ -28,7 +29,7 @@ PTH.share [PTH.mkPersist PTH.sqlSettings, PTH.mkMigrate "migrateAll"] [PTH.persi
     email Text
     age Int
     deriving Show Read Eq
-    UniqueUserNE name email
+    UniqueEmail email
 
   Article sql=articles
     title Text
@@ -50,6 +51,12 @@ PTH.share [PTH.mkPersist PTH.sqlSettings, PTH.mkMigrate "migrateAll"] [PTH.persi
     type ReactionType
     metadata Metadata
     deriving Show Read Eq
+
+  AuthData sql=auth_data
+    userId UserId
+    hashString ByteString
+    userType Text
+    UniqueUserId userId
 
 |]
 
