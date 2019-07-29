@@ -58,7 +58,26 @@ PTH.share [PTH.mkPersist PTH.sqlSettings, PTH.mkMigrate "migrateAll"] [PTH.persi
     userType Text
     UniqueUserId userId
 
+  LoginToken sql=login_tokens
+    userId UserId
+    cookie Text
+    UniqueUserid userId
+
 |]
+
+data LoginInfo = LoginInfo Text Text
+
+instance ToJSON LoginInfo where
+  toJSON (LoginInfo username password)= object
+    [ "username" .= username
+    , "password" .= password
+    ]
+
+instance FromJSON LoginInfo where
+  parseJSON = withObject "Login Info" $ \o -> do
+    username <- o .: "username"
+    password <- o .: "password"
+    return $ LoginInfo username password
 
 userPairs :: User -> [Pair]
 userPairs user =

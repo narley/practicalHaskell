@@ -32,8 +32,8 @@ newtype AdminUserId = AdminUserId Int64
 
 type UserAuthAPI =
   "users" :> Capture "uid" Int64 :> Get '[JSON] User :<|>
-  "users" :> ReqBody '[JSON] (User, Text) :> Post '[JSON] Int64 :<|>
-  "users" :> Get '[JSON] [Entity User]
+  "users" :> "create" :> ReqBody '[JSON] (User, Text) :> Post '[JSON] Int64 :<|>
+  "users" :> "all" :> Get '[JSON] [Entity User]
 
 userAuthAPI :: Proxy UserAuthAPI
 userAuthAPI = Proxy
