@@ -42,7 +42,6 @@ library
       Lecture10
       Lecture11
       Utils
-      Screencast
   other-modules:
       Paths_PracticalHaskell
   hs-source-dirs:
