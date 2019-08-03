@@ -82,6 +82,7 @@ runServer = do
   let portNum = case portString of
         Nothing -> 8080
         Just s -> read s
+  -- TODO Take this out for students
   databaseString <- lookupEnv "DATABASE_URL"
   let conn = case databaseString of
         Nothing -> localConnString
