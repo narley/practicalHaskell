@@ -15,8 +15,11 @@ import Data.Text (Text)
 import Data.Text.Encoding (encodeUtf8, decodeUtf8)
 import Database.Esqueleto
 import Database.Persist.Postgresql (ConnectionString, Entity(..))
+import Network.HTTP.Client (newManager)
+import Network.HTTP.Client.TLS (tlsManagerSettings)
 import Network.Wai.Handler.Warp (run)
 import Servant.API
+import Servant.Client
 import Servant.Server
 import System.Environment (lookupEnv)
 
@@ -84,3 +87,17 @@ runServer = do
         Nothing -> localConnString
         Just s -> C.pack s
   run portNum (serveWithContext basicAPI (authContext conn) (basicServer conn))
+
+helloClient :: ClientM Text
+(helloClient :<|> _ :<|> _) = client basicAPI
+
+clientEnv :: IO ClientEnv
+clientEnv = do
+  manager <- newManager tlsManagerSettings
+  baseUrl <- parseBaseUrl "http://127.0.0.1:8080"
+  return $ ClientEnv manager baseUrl Nothing
+
+helloHelper :: IO (Either ServantError Text)
+helloHelper = do
+  clientEnv' <- clientEnv
+  runClientM helloClient clientEnv'
