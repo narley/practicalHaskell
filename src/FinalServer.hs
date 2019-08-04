@@ -35,7 +35,7 @@ basicAPI :: Proxy BasicAPI
 basicAPI = Proxy :: Proxy BasicAPI
 
 helloHandler :: Handler Text
-helloHandler = return "Hello Haskell Heroku"
+helloHandler = return "Hello Haskell Heroku!"
 
 createHandler :: ConnectionString -> (User, Text) -> Handler Int64
 createHandler conn (user, password) = liftIO $ runAction conn $ do

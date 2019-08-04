@@ -21,4 +21,4 @@ testSpec = describe "Final Server Tests" $
   it "Hit hello endpoint" $ do
     result <- helloHelper
     isRight result `shouldBe` True
-    fromRight' result `shouldBe` "Hello Haskell Heroku"
+    fromRight' result `shouldBe` "Hello Haskell Heroku!"
