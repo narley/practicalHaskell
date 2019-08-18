@@ -10,7 +10,7 @@ import Network.HTTP.Client (newManager)
 import Network.HTTP.Client.TLS (tlsManagerSettings)
 import System.Environment (lookupEnv)
 import Servant.API
-import Servant.Client (ClientEnv(..), parseBaseUrl, runClientM, client, ClientM)
+import Servant.Client (ClientEnv(..), parseBaseUrl, runClientM, client, ClientM, ServantError)
 import Test.Hspec
 
 import BasicServer (runServer, basicAPI)
@@ -31,16 +31,15 @@ envVarSpec :: Maybe String -> Spec
 envVarSpec serverPort = it "Should fetch the basic server port environment variable" $
   serverPort `shouldBe` Just "8080"
 
-fetchNewItems :: ClientEnv -> IO (Text, Int)
+fetchNewItems :: ClientEnv -> IO (Either ServantError (Text, Int))
 fetchNewItems clientEnv = flip runClientM clientEnv $ do
   librariesResponse <- fetchLibrariesClient
   numUsersResponse <- fetchNumUsersClient
   return (librariesResponse, numUsersResponse)
 
-testSpec :: SpecWith (Text, Int)
-testSpec = it "Should fetch the proper info on new endpoints" $ \(libraries, numUsers) -> do
-  libraries `shouldBe` "This server uses Servant"
-  numUsers `shouldBe` 1
+testSpec :: SpecWith (Either ServantError (Text, Int))
+testSpec = it "Should fetch the proper info on new endpoints" $ \results ->
+  results `shouldBe` Right ("This server uses Servant", 1)
 
 fetchLibrariesClient :: ClientM Text
 fetchNumUsersClient :: ClientM Int

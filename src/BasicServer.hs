@@ -11,6 +11,7 @@ import Data.Text (Text)
 import Network.Wai.Handler.Warp (run)
 import Servant.API
 import Servant.Server
+import System.Environment
 
 type BasicAPI =
   "api" :> "version" :> Get '[JSON] Int :<|>
