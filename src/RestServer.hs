@@ -4,6 +4,7 @@
 
 module RestServer where
 
+import Control.Monad.Except (throwError, liftIO)
 import Data.Int (Int64)
 import qualified Data.Map as Map
 import Data.Proxy (Proxy(..))
@@ -19,7 +20,7 @@ import Schema
 -- restAPI :: Proxy RestAPI
 
 runRestAPI :: IO ()
-runRestAPI = undefined
+runRestAPI = run 8080 (serve restAPI restServer)
 
 nameDictionary :: Map.Map Int64 User
 nameDictionary = Map.fromList

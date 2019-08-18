@@ -32,7 +32,6 @@ library
       RestServer
       RestAPIClient
       SecretServer
-      Lecture4
       Lecture5
       Lecture6
       Lecture7
@@ -160,11 +159,13 @@ test-suite lecture-4-tests
   build-depends:
       base
     , containers
+    , directory
     , hspec
     , http-client
     , http-client-tls
     , servant
     , servant-client
+    , tasty-hunit
     , text
     , PracticalHaskell
   ghc-options:         -threaded -rtsopts -with-rtsopts=-N
