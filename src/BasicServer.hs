@@ -4,6 +4,7 @@
 
 module BasicServer where
 
+import Control.Monad.Except (throwError)
 import Data.Int (Int64)
 import qualified Data.Map as Map
 import Data.Proxy (Proxy(..))
@@ -12,6 +13,8 @@ import Network.Wai.Handler.Warp (run)
 import Servant.API
 import Servant.Server
 import System.Environment
+
+import BasicServerTypes
 
 type BasicAPI =
   "api" :> "version" :> Get '[JSON] Int :<|>
