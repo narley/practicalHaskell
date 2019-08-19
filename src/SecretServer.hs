@@ -40,21 +40,21 @@ app = do
     case authData of
       Nothing -> do
         setStatus (Status 403 "Auth data format is invalid")
-        text "Auth data format is invalid"
+        json ("Auth data format is invalid" :: Text)
       Just (AuthData username password) -> if username == trueUsername && password == truePassword
         then do
           (AppState apiToken _) <- getState
-          text (U.toText apiToken)
+          json (U.toText apiToken)
         else do
           setStatus (Status 403 "Incorrect auth data")
-          text "Incorrect auth data"
+          json ("Incorrect auth data" :: Text)
   get ("secret" <//> var) $ \token -> do
     (AppState apiToken secret) <- getState
     if token == U.toText apiToken
-      then text (U.toText secret)
+      then json (U.toText secret)
       else do
         setStatus (Status 403 "Invalid API token")
-        text "Invalid API Token"
+        json ("Invalid API Token" :: Text)
 
 trueUsername :: Text
 trueUsername = "test"

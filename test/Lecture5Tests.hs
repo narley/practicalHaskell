@@ -48,15 +48,15 @@ main = do
 fetchTestResults :: ClientEnv -> IO TestResults
 fetchTestResults clientEnv = do
   allUsers <- runClientM getAllClient clientEnv
-  user1 <- runClientM (getIndividualClient 2) clientEnv
-  user2 <- runClientM (getIndividualClient 6) clientEnv
-  filterResult1 <- runClientM (filterClient Nothing ["anthony@test.com", "julian@spark.com"]) clientEnv
-  filterResult2 <- runClientM (filterClient (Just 26) ["anthony@test.com", "julian@spark.com"]) clientEnv
-  filterResult3 <- runClientM (filterClient (Just 26) []) clientEnv
-  filterResult4 <- runClientM (filterClient (Just 45) ["anthony@test.com", "julian@spark.com"]) clientEnv
-  postResult <- runClientM (postClient (User "James" "james@test.com" 28)) clientEnv
-  badRetrieve <- runClientM (getIndividualClient 8) clientEnv
-  badDelete <- runClientM (deleteClient 10) clientEnv
+  user1 <- runClientM (getUserClient 2) clientEnv
+  user2 <- runClientM (getUserClient 6) clientEnv
+  filterResult1 <- runClientM (filterUsersClient Nothing ["anthony@test.com", "julian@spark.com"]) clientEnv
+  filterResult2 <- runClientM (filterUsersClient (Just 26) ["anthony@test.com", "julian@spark.com"]) clientEnv
+  filterResult3 <- runClientM (filterUsersClient (Just 26) []) clientEnv
+  filterResult4 <- runClientM (filterUsersClient (Just 45) ["anthony@test.com", "julian@spark.com"]) clientEnv
+  postResult <- runClientM (createUserClient (User "James" "james@test.com" 28)) clientEnv
+  badRetrieve <- runClientM (getUserClient 8) clientEnv
+  badDelete <- runClientM (deleteUserClient 10) clientEnv
   return $ TestResults
     allUsers
     (user1, user2)
