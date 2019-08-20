@@ -32,7 +32,7 @@ main = do
 testSpec :: SpecWith TestResults
 testSpec = describe "Calling the CRUD API gives the right results" $ do
   it "Should retrieve the right number of users" $ \testResults ->
-    fetchAllUsersResult testResults `shouldBe` 100
+    fetchAllUsersResult testResults `shouldBe` 101
   it "Should create the user properly" $ \testResults ->
     createUserResult testResults `shouldBe` True
   it "Should retrieve the user properly" $ \testResults -> do
@@ -180,19 +180,19 @@ fetchTestResults clientEnv = do
     articleCount createdArticleResult retrievedArticleResult retrievedArticleUpdatedResult deletedArticleResult
     commentCount createdCommentResult retrievedCommentResult retrievedCommentUpdatedResult deletedCommentResult
 
-fetchAllUsersClient :: ClientM [User]
+fetchAllUsersClient :: ClientM [Entity User]
 retrieveUserClient :: Int64 -> ClientM (Maybe User)
 createUserClient :: User -> ClientM Int64
 deleteUserClient :: Int64 -> ClientM ()
 updateUserClient :: Int64 -> User -> ClientM ()
 
-fetchAllArticlesClient :: ClientM [Article]
+fetchAllArticlesClient :: ClientM [Entity Article]
 retrieveArticleClient :: Int64 -> ClientM (Maybe Article)
 createArticleClient :: Article -> ClientM Int64
 deleteArticleClient :: Int64 -> ClientM ()
 updateArticleClient :: Int64 -> Article -> ClientM ()
 
-fetchAllCommentsClient :: ClientM [Comment]
+fetchAllCommentsClient :: ClientM [Entity Comment]
 retrieveCommentClient :: Int64 -> ClientM (Maybe Comment)
 createCommentClient :: Comment -> ClientM Int64
 deleteCommentClient :: Int64 -> ClientM ()
@@ -202,13 +202,13 @@ updateCommentClient :: Int64 -> Comment -> ClientM ()
  retrieveUserClient :<|>
  createUserClient :<|>
  deleteUserClient :<|>
- updateUserClient :<|>
- fetchAllArticlesClient :<|>
+ updateUserClient) :<|>
+ (fetchAllArticlesClient :<|>
  retrieveArticleClient :<|>
  createArticleClient :<|>
  deleteArticleClient :<|>
- updateArticleClient :<|>
- fetchAllCommentsClient :<|>
+ updateArticleClient) :<|>
+ (fetchAllCommentsClient :<|>
  retrieveCommentClient :<|>
  createCommentClient :<|>
  deleteCommentClient :<|>

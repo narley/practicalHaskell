@@ -192,14 +192,18 @@ test-suite lecture-6-tests
   type:                exitcode-stdio-1.0
   hs-source-dirs:      test
   main-is:             Lecture6Tests.hs
+  other-modules:
+    TestUtils
   build-depends:
       base
+    , directory
     , hspec
     , http-client
     , http-client-tls
     , persistent
     , servant
     , servant-client
+    , tasty-hunit
     , time
     , PracticalHaskell
   ghc-options:         -threaded -rtsopts -with-rtsopts=-N
