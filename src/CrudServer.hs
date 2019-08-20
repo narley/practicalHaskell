@@ -62,37 +62,37 @@ usersServer conn =
 
 -- type ArticlesCRUD = ...
 getAllArticles :: ConnectionString -> Handler [Entity Article]
-getAllArticles = undefined
+getAllArticles conn = undefined
 
 retrieveArticle :: ConnectionString -> Int64 -> Handler (Maybe Article)
-retrieveArticle = undefined
+retrieveArticle conn = undefined
 
 createArticle :: ConnectionString -> Article -> Handler Int64
-createArticle = undefined
+createArticle conn = undefined
 
 deleteArticle :: ConnectionString -> Int64 -> Handler ()
-deleteArticle = undefined
+deleteArticle conn = undefined
 
 updateArticle :: ConnectionString -> Int64 -> Article -> Handler ()
-updateArticle = undefined
+updateArticle conn = undefined
 
 -- articlesServer :: ConnectionString -> Server ArticlesCRUD
 
 -- type CommentsCRUD = ...
 getAllComments :: ConnectionString -> Handler [Entity Comment]
-getAllComments = undefined
+getAllComments conn = undefined
 
 retrieveComment :: ConnectionString -> Int64 -> Handler (Maybe Comment)
-retrieveComment = undefined
+retrieveComment conn = undefined
 
 createComment :: ConnectionString -> Comment -> Handler Int64
-createComment = undefined
+createComment conn = undefined
 
 deleteComment :: ConnectionString -> Int64 -> Handler ()
-deleteComment = undefined
+deleteComment conn = undefined
 
 updateComment :: ConnectionString -> Int64 -> Comment -> Handler ()
-updateComment = undefined
+updateComment conn = undefined
 
 -- commentsServer :: ConnectionString -> Server CommentsCRUD
 
