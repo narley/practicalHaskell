@@ -19,8 +19,8 @@ import Schema
 -- type RestAPI = ...
 -- restAPI :: Proxy RestAPI
 
-runRestAPI :: IO ()
-runRestAPI = run 8080 (serve restAPI restServer)
+-- runRestAPI :: IO ()
+-- runRestAPI = run 8080 (serve restAPI restServer)
 
 nameDictionary :: Map.Map Int64 User
 nameDictionary = Map.fromList
