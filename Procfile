@@ -1,1 +1,1 @@
-web: run-final-server
+web: migrate-db && run-final-server
