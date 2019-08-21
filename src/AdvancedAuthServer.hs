@@ -89,7 +89,7 @@ userAuthAPI = Proxy
 
 -- TODO: Add user auth
 fetchUserHandler :: ConnectionString -> Int64 -> Handler User
-fetchUserHandler conn uid = if True -- << Check if the IDs match after implementing auth!
+fetchUserHandler conn uid = if False -- << Check if the IDs match after implementing auth!
   then throwError $ err403 { errBody = "Wrong User ID!"}
   else do
     results <- liftIO $ runAction conn $ get (toSqlKey uid)
