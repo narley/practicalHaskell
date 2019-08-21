@@ -5,10 +5,6 @@ jobs:
       - image: fpco/stack-build:lts-12.13
     steps:
       - checkout
-      - restore_cache:
-          name: Restore Cached Dependencies
-          keys:
-            - practical-haskell-v1-{{ checksum "stack.yaml" }}-{{ checksum "PracticalHaskell.cabal" }}
       - run:
           name: Resolve/Update Dependencies
           command: stack setup
@@ -18,9 +14,3 @@ jobs:
       - run:
           name: Run tests
           command: stack build PracticalHaskell:test:final-server-tests
-      - save_cache:
-          name: Cache Dependencies
-          key: practical-haskell-v1-{{ checksum "stack.yaml" }}-{{ checksum "PracticalHaskell.cabal" }}
-          paths:
-            - "/root/.stack"
-            - ".stack-work"
