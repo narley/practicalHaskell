@@ -44,11 +44,11 @@ areaCase : (String, Float, Float) -> Html BPTestMessage
 areaCase (description, expected, actual) =
   let isCorrect = expected - actual < 0.00001
       liStyle = if isCorrect then [style "color" "green"] else [style "color" "red"]
-  in  li [liStyle] [text description, text ": ", text (String.fromFloat actual)]
+  in  li liStyle [text description, text ": ", text (String.fromFloat actual)]
 
 spCase : (String, List Int, List Int) -> Html BPTestMessage
 spCase (description, expected, actual) =
   let isCorrect = expected == actual
       liStyle = if isCorrect then [style "color" "green"] else [style "color" "red"]
       listString = "[" ++ String.join ", " (List.map String.fromInt actual) ++ "]"
-  in  li [liStyle] [text description, text ": ", text listString]
+  in  li liStyle [text description, text ": ", text listString]
