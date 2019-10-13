@@ -6,6 +6,7 @@ import Elm.Derive (deriveElmDef, defaultOptions)
 import Elm.TyRep
 
 import Schema
+import SchemaTypes
 
 deriveElmDef defaultOptions ''User
 deriveElmDef defaultOptions ''Article
@@ -34,11 +35,10 @@ moduleHeader moduleName = unlines
   , ""
   , "import Json.Decode"
   , "import Json.Encode exposing (Value)"
-  , "-- The following module comes from batavelle/json-helpers"
+  , "-- The following module comes from bartavelle/json-helpers"
   , "import Json.Helpers exposing (..)"
   , "import Dict exposing (Dict)"
   , "import Set exposing (Set)"
-  , "import Time exposing (Posix)"
   , ""
   , ""
   ]

@@ -14,6 +14,7 @@ import           Data.Aeson (ToJSON(..), FromJSON(..), Value(..), (.=), object, 
 import           Data.Aeson.Types (Parser, Pair)
 import           Data.Aeson.TH (deriveJSON, defaultOptions, Options(..))
 import           Data.ByteString (ByteString)
+import           Data.Int (Int64)
 import           Database.Persist.Sql (Key, Entity(..), fromSqlKey, toSqlKey)
 import           Data.Text (Text)
 import           Data.Time (UTCTime)
@@ -65,19 +66,39 @@ PTH.share [PTH.mkPersist PTH.sqlSettings, PTH.mkMigrate "migrateAll"] [PTH.persi
 
 |]
 
-data LoginInfo = LoginInfo Text Text
+data LoginInfo = LoginInfo
+  { loginInfoUsername :: Text
+  , loginInfoPassword :: Text
+  }
 
 instance ToJSON LoginInfo where
   toJSON (LoginInfo username password)= object
-    [ "username" .= username
-    , "password" .= password
+    [ "loginInfoUsername" .= username
+    , "loginInfoPassword" .= password
     ]
 
 instance FromJSON LoginInfo where
   parseJSON = withObject "Login Info" $ \o -> do
-    username <- o .: "username"
-    password <- o .: "password"
+    username <- o .: "loginInfoUsername"
+    password <- o .: "loginInfoPassword"
     return $ LoginInfo username password
+
+data LoginResponse = LoginResponse
+  { loginResponseUserId :: Int64
+  , loginResponseCookie :: Text
+  }
+
+instance ToJSON LoginResponse where
+  toJSON (LoginResponse userId cookie)= object
+    [ "loginResponseUserId" .= userId
+    , "loginResponseCookie" .= cookie
+    ]
+
+instance FromJSON LoginResponse where
+  parseJSON = withObject "Login Response" $ \o -> do
+    userId <- o .: "loginResponseUserId"
+    cookie <- o .: "loginResponseCookie"
+    return $ LoginResponse userId cookie
 
 userPairs :: User -> [Pair]
 userPairs user =
