@@ -4,3 +4,6 @@
 *.swp
 .idea/
 *.iml
+frontend/elm-stuff
+frontend/index.html
+frontend/src/SchemaTypes.elm

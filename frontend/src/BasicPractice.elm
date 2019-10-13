@@ -1,0 +1,40 @@
+module BasicPractice exposing (..)
+
+-- data Point = Point {x :: Float, y :: Float}
+-- data Shape =
+--   Circle Float Point |
+--   Triangle Point Point Point
+--
+-- calculateArea :: Shape -> Float
+-- calculateArea (Circle radius _) = pi * radius * radius
+-- calculateArea (Triangle (Point x1 y1) (Point x2 y2) (Point x3 y3)) =
+--   abs $ (first + second + third) / 2.0
+--   where
+--     first = x1 * (y2 - y3)
+--     second = x2 * (y3 - y1)
+--     third = x3 * (y1 - y2)
+
+
+-- TODO
+type alias Point = Float
+type Shape = Shape
+
+calculateArea : Shape -> Float
+calculateArea _ = 0.0
+
+-- sumsAndProducts :: [Int] -> Int -> Int -> [Int]
+-- sumsAndProducts is j k = do
+--   i <- is
+--   l <- [i + j, i * j]
+--   return $ k - l
+--
+-- Examples:
+-- sumsAndProducts [] 3 5 = []
+-- sumsAndProducts [1, 2, 3] 3 10 = [6, 7, 5, 4, 4, 1]
+-- sumsAndProducts [7, 3, 2, 9, 8] 2 9 = [0, -5, 4, 3, 5, 5, -2, -9, -1, -7]
+
+listAndThen : (a -> List a) -> List a -> List a
+listAndThen listFunc listElems = listElems
+
+sumsAndProducts : List Int -> Int -> Int -> List Int
+sumsAndProducts is j k = is
