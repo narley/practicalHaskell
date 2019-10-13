@@ -80,6 +80,17 @@ executable migrate-db
     , PracticalHaskell
   default-language: Haskell2010
 
+executable make-elm-types
+  main-is: MakeElmTypes.hs
+  hs-source-dirs:
+    app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , elm-bridge
+    , PracticalHaskell
+  default-language: Haskell2010
+
 executable run-basic-server
   main-is: RunBasicServer.hs
   hs-source-dirs:

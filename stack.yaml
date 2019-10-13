@@ -41,6 +41,7 @@ packages:
 extra-deps:
   - esqueleto-2.6.0
   - pwstore-fast-2.4.4
+  - elm-bridge-0.5.1
   - git: https://github.com/jhb563/persistent-migration.git
     commit: 9f9c5035efe
 
