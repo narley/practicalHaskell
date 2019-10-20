@@ -102,16 +102,16 @@ instance FromJSON LoginResponse where
 
 userPairs :: User -> [Pair]
 userPairs user =
-  [ "name" .= userName user
-  , "email" .= userEmail user
-  , "age" .= userAge user
+  [ "userName" .= userName user
+  , "userEmail" .= userEmail user
+  , "userAge" .= userAge user
   ]
 
 parseUser :: Object -> Parser User
 parseUser o = do
-  name_ <- o .: "name"
-  email_ <- o .: "email"
-  age_ <- o .: "age"
+  name_ <- o .: "userName"
+  email_ <- o .: "userEmail"
+  age_ <- o .: "userAge"
   return $ User name_ email_ age_
 
 instance ToJSON User where
@@ -131,18 +131,18 @@ instance FromJSON (Entity User) where
 
 articlePairs :: Article -> [Pair]
 articlePairs article =
-  [ "title" .= articleTitle article
-  , "body" .= articleBody article
-  , "publishedAt" .= articlePublishedAt article
-  , "authorId" .= fromSqlKey (articleAuthorId article)
+  [ "articleTitle" .= articleTitle article
+  , "articleBody" .= articleBody article
+  , "articlePublishedAt" .= articlePublishedAt article
+  , "articleAuthorId" .= fromSqlKey (articleAuthorId article)
   ]
 
 parseArticle :: Object -> Parser Article
 parseArticle o = do
-    title_ <- o .: "title"
-    body_ <- o .: "body"
-    publishedAt_ <- o .: "publishedAt"
-    authorId_ <- o .: "authorId"
+    title_ <- o .: "articleTitle"
+    body_ <- o .: "articleBody"
+    publishedAt_ <- o .: "articlePublishedAt"
+    authorId_ <- o .: "articleAuthorId"
     return $ Article title_ body_ publishedAt_ (toSqlKey authorId_)
 
 instance ToJSON Article where
@@ -162,18 +162,18 @@ instance FromJSON (Entity Article) where
 
 commentPairs :: Comment -> [Pair]
 commentPairs comment =
-  [ "articleId" .= fromSqlKey (commentArticleId comment)
-  , "body" .= commentBody comment
-  , "submittedAt" .= commentSubmittedAt comment
-  , "userId" .= fromSqlKey (commentUserId comment)
+  [ "commentArticleId" .= fromSqlKey (commentArticleId comment)
+  , "commentBody" .= commentBody comment
+  , "commentSubmittedAt" .= commentSubmittedAt comment
+  , "commentUserId" .= fromSqlKey (commentUserId comment)
   ]
 
 parseComment :: Object -> Parser Comment
 parseComment o = do
-  userId_ <- o .: "userId"
-  body_ <- o .: "body"
-  submittedAt_ <- o .: "submittedAt"
-  articleId_ <- o .: "articleId"
+  userId_ <- o .: "commentUserId"
+  body_ <- o .: "commentBody"
+  submittedAt_ <- o .: "commentSubmittedAt"
+  articleId_ <- o .: "commentArticleId"
   return $ Comment (toSqlKey userId_) (toSqlKey articleId_) body_ submittedAt_
 
 instance ToJSON Comment where

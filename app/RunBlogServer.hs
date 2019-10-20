@@ -1,6 +1,6 @@
 module Main where
 
-import BasicServer (runServer)
+import BlogServer (runServer)
 
 main :: IO ()
 main = runServer
