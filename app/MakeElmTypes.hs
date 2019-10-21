@@ -39,6 +39,7 @@ moduleHeader moduleName = unlines
   , "import Json.Helpers exposing (..)"
   , "import Dict exposing (Dict)"
   , "import Set exposing (Set)"
+  , "import Time exposing (..)"
   , ""
   , ""
   ]
