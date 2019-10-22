@@ -121,11 +121,11 @@ instance FromJSON User where
   parseJSON = withObject "User" parseUser
 
 instance ToJSON (Entity User) where
-  toJSON (Entity uid user) = object $ ("id" .= fromSqlKey uid) : userPairs user
+  toJSON (Entity uid user) = object $ [("key" .= fromSqlKey uid), ("value" .= user)]
 
 instance FromJSON (Entity User) where
   parseJSON = withObject "User" $ \o -> do
-    user <- parseUser o
+    user <- o .: "value"
     uid <- o .: "id"
     return $ Entity (toSqlKey uid) user
 
@@ -152,11 +152,11 @@ instance FromJSON Article where
   parseJSON = withObject "Article" parseArticle
 
 instance ToJSON (Entity Article) where
-  toJSON (Entity aid article) = object $ ("id" .= fromSqlKey aid) : articlePairs article
+  toJSON (Entity aid article) = object $ [("key" .= fromSqlKey aid), ("value" .= article)]
 
 instance FromJSON (Entity Article) where
   parseJSON = withObject "Article" $ \o -> do
-    article <- parseArticle o
+    article <- o .: "value"
     aid <- o .: "id"
     return $ Entity (toSqlKey aid) article
 
@@ -183,10 +183,10 @@ instance FromJSON Comment where
   parseJSON = withObject "Comment" parseComment
 
 instance ToJSON (Entity Comment) where
-  toJSON (Entity cid comment) = object $ ("id" .= fromSqlKey cid) : commentPairs comment
+  toJSON (Entity cid comment) = object $ [("key" .= fromSqlKey cid), ("value" .= comment)]
 
 instance FromJSON (Entity Comment) where
   parseJSON = withObject "Comment" $ \o -> do
-    comment <- parseComment o
+    comment <- o .: "value"
     cid <- o .: "id"
     return $ Entity (toSqlKey cid) comment
