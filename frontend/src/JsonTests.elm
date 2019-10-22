@@ -23,36 +23,36 @@ main = Browser.sandbox {init = loadModel, update = update, view = view}
 loadModel : JsonTestModel
 loadModel =
   { encodeTimeTests =
-    [ ("Encode 12/01/19 - 15:30:30", "2019-12-01T15:30:30", encode 0 (jsonEncPosix (millisToPosix 1575214230000)))
-    , ("Encode 12/31/19 - 12:00:00", "2019-12-31T12:00:00", encode 0 (jsonEncPosix (millisToPosix 1577793600000)))
-    , ("Encode 01/01/20 - 12:00:00", "2020-01-01T12:00:00", encode 0 (jsonEncPosix (millisToPosix 1577880000000)))
-    , ("Encode 03/02/20 - 12:00:00", "2020-03-02T12:00:00", encode 0 (jsonEncPosix (millisToPosix 1583150400000)))
+    [ ("Encode 12/01/19 - 15:30:30", "\"2019-12-01T15:30:30\"", encode 0 (jsonEncPosix (millisToPosix 1575214230000)))
+    , ("Encode 12/31/19 - 12:00:00", "\"2019-12-31T12:00:00\"", encode 0 (jsonEncPosix (millisToPosix 1577793600000)))
+    , ("Encode 01/01/20 - 12:00:00", "\"2020-01-01T12:00:00\"", encode 0 (jsonEncPosix (millisToPosix 1577880000000)))
+    , ("Encode 03/02/20 - 12:00:00", "\"2020-03-02T12:00:00\"", encode 0 (jsonEncPosix (millisToPosix 1583150400000)))
     ]
   , decodeTimeTests =
-    [ ("Decode 12/01/19 - 15:30:30", millisToPosix 1575214230000, decodeString jsonDecPosix "2019-12-01T15:30:30")
-    , ("Decode 12/31/19 - 12:00:00", millisToPosix 1577793600000, decodeString jsonDecPosix "2019-12-31T12:00:00")
-    , ("Decode 01/01/20 - 12:00:00", millisToPosix 1577880000000, decodeString jsonDecPosix "2020-01-01T12:00:00+03")
-    , ("Decode 03/02/20 - 12:00:00", millisToPosix 1583150400000, decodeString jsonDecPosix "2020-03-02T12:00:00+03")
+    [ ("Decode 12/01/19 - 15:30:30", millisToPosix 1575214230000, decodeString jsonDecPosix "\"2019-12-01T15:30:30\"")
+    , ("Decode 12/31/19 - 12:00:00", millisToPosix 1577793600000, decodeString jsonDecPosix "\"2019-12-31T12:00:00\"")
+    , ("Decode 01/01/20 - 12:00:00+03", millisToPosix 1577880000000, decodeString jsonDecPosix "\"2020-01-01T12:00:00+03\"")
+    , ("Decode 03/02/20 - 12:00:00+03", millisToPosix 1583150400000, decodeString jsonDecPosix "\"2020-03-02T12:00:00+03\"")
     ]
   , encodeEntityTests =
-    [ ( "Encode 'ID 5 User james james@test.com 25 should be {\"id\":5,\"userName\":\"james\",\"userEmail\":\"james@test.com\",\"userAge\":25}"
-      , "{\"id\":5,\"userName\":\"james\",\"userEmail\":\"james@test.com\",\"userAge\":25"
+    [ ( "Encode 'ID 5 User james james@test.com 25 should be {\"key\":5,\"value\":{\"userName\":\"james\",\"userEmail\":\"james@test.com\",\"userAge\":25}}"
+      , "{\"key\":5,\"value\":{\"userName\":\"james\",\"userEmail\":\"james@test.com\",\"userAge\":25}}"
       , encode 0 (encodeEntity jsonEncUser (Entity 5 (User "james" "james@test.com" 25)))
       )
-    , ( "Encode 'ID 3 Article Title Body 2020-01-01T12:00:00 5 should be {\"id\":3,\"articleTitle\":\"Title\",\"articleBody\":\"Body\",\"articlePublishedAt\":\"2020-01-01T12:00:00+03\",\"articleAuthorId\":5}"
-      , "{\"id\":3, \"articleTitle\":\"Title\",\"articleBody\":\"Body\",\"articlePublishedAt\":\"2020-01-01T12:00:00+03\",\"articleAuthorId\": 5}"
+    , ( "Encode 'ID 3 Article Title Body 2020-01-01T12:00:00 5 should be {\"key\":3,\"value\":{\"articleTitle\":\"Title\",\"articleBody\":\"Body\",\"articlePublishedAt\":\"2020-01-01T12:00:00\",\"articleAuthorId\":5}}"
+      , "{\"key\":3,\"value\":{\"articleTitle\":\"Title\",\"articleBody\":\"Body\",\"articlePublishedAt\":\"2020-01-01T12:00:00\",\"articleAuthorId\":5}}"
       , encode 0 (encodeEntity jsonEncArticle (Entity 3 (Article "Title" "Body" (millisToPosix 1577880000000) 5)))
       )
     ]
   , decodeEntityTest1 =
     ( "Decode Entity User should be ID 5 User james james@test.com 25"
     , Entity 5 (User "james" "james@test.com" 25)
-    , decodeString (decodeEntity jsonDecUser) "{\"id\":5,\"userName\":\"james\",\"userEmail\":\"james@test.com\",\"userAge\":25"
+    , decodeString (decodeEntity jsonDecUser) "{\"key\":5,\"value\":{\"userName\":\"james\",\"userEmail\":\"james@test.com\",\"userAge\":25}}"
     )
   , decodeEntityTest2 =
     ( "Decode Entity Article should be ID 3 Article Title Body 2020-01-01T12:00:00 5"
     , Entity 3 (Article "Title" "Body" (millisToPosix 1577880000000) 5)
-    , decodeString (decodeEntity jsonDecArticle) "{\"id\":3, \"articleTitle\":\"Title\",\"articleBody\":\"Body\",\"articlePublishedAt\":\"2020-01-01T12:00:00+03\",\"articleAuthorId\": 5}"
+    , decodeString (decodeEntity jsonDecArticle) "{\"key\":3,\"value\":{\"articleTitle\":\"Title\",\"articleBody\":\"Body\",\"articlePublishedAt\":\"2020-01-01T12:00:00+03\",\"articleAuthorId\": 5}}"
     )
   }
 
@@ -81,7 +81,7 @@ decodeTimeCase : (String, Posix, Result Error Posix) -> Html ()
 decodeTimeCase (description, expected, actual) =
   let (isCorrect, resultString) = case actual of
         Err _ -> (False, "Could not parse!")
-        Ok t -> if expected == t then (True, "Success!") else (False, "Wrong time!")
+        Ok t -> if expected == t then (True, "Success!") else (False, String.append "Wrong time! " (String.fromInt (posixToMillis t)))
       liStyle = if isCorrect then [style "color" "green"] else [style "color" "red"]
   in  li liStyle [text description, text ": ", text resultString]
 
