@@ -1,7 +1,7 @@
-module PosixJson exposing (jsonDecPosix, jsonEncPosix)
+module PosixJson exposing (..)
 
-import Json.Encode exposing (..)
-import Json.Decode exposing (..)
+import Json.Encode as E
+import Json.Decode as D
 import List exposing (range, map, sum)
 import Time exposing (..)
 
@@ -24,9 +24,7 @@ type alias Iso8601Elements =
 -- Year, Month, Day, Hour, Minute and Second
 getIso8601CalendarElems : Int -> Iso8601Elements
 getIso8601CalendarElems msSinceEpoch =
-  let yearsSinceEpoch = msSinceEpoch // millisecondsPerYear
-      year = 1970 + yearsSinceEpoch
-      millisecondsIntoYear = modBy millisecondsPerYear msSinceEpoch
+  let (year, millisecondsIntoYear) = getYearAndRemainingSeconds unixEpochYear msSinceEpoch
       daysIntoYear = millisecondsIntoYear // millisecondsPerDay
       (month, day) = monthAndDayFromDayIntoYear year daysIntoYear
       millisecondsIntoDay = modBy millisecondsPerDay millisecondsIntoYear
@@ -36,15 +34,24 @@ getIso8601CalendarElems msSinceEpoch =
       second = (modBy millisecondsPerMinute millisecondsIntoHour) // 1000
   in  Iso8601Elements year month day hour minute second
 
+millisFromCalendarElems: Iso8601Elements -> Int
+millisFromCalendarElems {year, month, day, hour, minute, second} =
+  let days = dayOfTheYear year month day
+  in  (millisecondsInCalendarYear (year - 1)) +
+      (days * millisecondsPerDay) +
+      (hour * millisecondsPerHour) +
+      (minute * millisecondsPerMinute) +
+      (second * 1000)
+
 monthAndDayFromDayIntoYear : Int -> Int -> (Int, Int)
 monthAndDayFromDayIntoYear year daysIntoYear =
   let accumulatedDaysPerMonth = if isLeapYear year
         then List.reverse [0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335]
         else List.reverse [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334]
-      remainingMonths = dropWhile (\a -> a > daysIntoYear) accumulatedDaysPerMonth
+      remainingMonths = dropWhile (\a -> a <= daysIntoYear) accumulatedDaysPerMonth
       day = case List.head remainingMonths of
               Nothing -> 0 -- Can't happen
-              Just d -> daysIntoYear - d
+              Just d -> daysIntoYear - d + 1
       month = List.length remainingMonths
   in  (month, day)
 
@@ -62,6 +69,9 @@ dayOfTheYear year month day = if month == 1
 
 millisecondsPerYear : Int
 millisecondsPerYear = 31536000000
+
+millisecondsPerLeapYear : Int
+millisecondsPerLeapYear = millisecondsPerYear + millisecondsPerDay
 
 millisecondsPerDay : Int
 millisecondsPerDay = 86400000
@@ -98,9 +108,27 @@ isLeapYear x = if modBy 4 x /= 0
 unixEpochYear : Int
 unixEpochYear = 1970
 
+zeroPad : Int -> String
+zeroPad i = if i < 10
+  then String.append "0" (String.fromInt i)
+  else String.fromInt i
+
 dropWhile : (a -> Bool) -> List a -> List a
 dropWhile pred lst = case lst of
   [] -> []
   (li :: lis) -> if pred li
     then li :: (dropWhile pred lis)
     else dropWhile pred lis
+
+getYearAndRemainingSeconds: Int -> Int -> (Int, Int)
+getYearAndRemainingSeconds currentYear milliseconds =
+  let millisInYear = if isLeapYear currentYear then millisecondsPerLeapYear else millisecondsPerYear
+  in  if millisInYear > milliseconds then (currentYear, milliseconds)
+        else getYearAndRemainingSeconds (currentYear + 1) (milliseconds - millisInYear)
+
+millisecondsInCalendarYear : Int -> Int
+millisecondsInCalendarYear year = if year < 1970
+  then 0
+  else if isLeapYear year
+    then millisecondsPerLeapYear + (millisecondsInCalendarYear (year - 1))
+    else millisecondsPerYear + (millisecondsInCalendarYear (year - 1))
