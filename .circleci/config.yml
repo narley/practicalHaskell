@@ -12,5 +12,5 @@ jobs:
           name: Build
           command: stack build
       - run:
-          name: Run tests
-          command: stack build PracticalHaskell:test:final-server-tests
+          name: Install
+          command: stack install

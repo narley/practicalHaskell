@@ -22,17 +22,8 @@ library
       Database
       Schema
       SchemaTypes
-      AdvancedAuthServer
-      AuthServer
-      BasicServer
-      BasicServerTypes
       BlogServer
-      CrudServer
-      FinalServer
       JWTHelpers
-      RestServer
-      RestAPIClient
-      SecretServer
       Utils
   other-modules:
       Paths_PracticalHaskell
@@ -45,8 +36,6 @@ library
     , containers
     , esqueleto
     , http-api-data
-    , http-client
-    , http-client-tls
     , http-media
     , http-types
     , jwt
@@ -59,14 +48,10 @@ library
     , pwstore-fast
     , random
     , servant
-    , servant-client
-    , servant-client-core
     , servant-options
     , servant-server
-    , Spock
     , text
     , time
-    , uuid
     , vector
     , wai
     , warp
@@ -103,179 +88,3 @@ executable run-blog-server
       base >=4.7 && <5
     , PracticalHaskell
   default-language: Haskell2010
-
-executable run-secret-server
-  main-is: RunSecretServer.hs
-  hs-source-dirs:
-    app
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N
-  build-depends:
-      base >=4.7 && <5
-    , PracticalHaskell
-  default-language: Haskell2010
-
-executable run-final-server
-  main-is: RunFinalServer.hs
-  hs-source-dirs:
-    app
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N
-  build-depends:
-      base >=4.7 && <5
-    , PracticalHaskell
-  default-language: Haskell2010
-
-test-suite lecture-2-tests
-  type:                exitcode-stdio-1.0
-  hs-source-dirs:      test
-  main-is:             Lecture2Tests.hs
-  build-depends:
-      base
-    , hspec
-    , http-client
-    , http-client-tls
-    , servant
-    , servant-client
-    , text
-    , PracticalHaskell
-  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
-  default-language:    Haskell2010
-
-test-suite lecture-3-tests
-  type:                exitcode-stdio-1.0
-  hs-source-dirs:      test
-  main-is:             Lecture3Tests.hs
-  other-modules:
-  build-depends:
-      base
-    , hspec
-    , http-client
-    , http-client-tls
-    , servant
-    , servant-client
-    , text
-    , PracticalHaskell
-  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
-  default-language:    Haskell2010
-
-test-suite lecture-4-tests
-  type:                exitcode-stdio-1.0
-  hs-source-dirs:      test
-  main-is:             Lecture4Tests.hs
-  other-modules:
-    TestUtils
-  build-depends:
-      base
-    , containers
-    , directory
-    , hspec
-    , http-client
-    , http-client-tls
-    , servant
-    , servant-client
-    , tasty-hunit
-    , text
-    , PracticalHaskell
-  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
-  default-language:    Haskell2010
-
-test-suite lecture-5-tests
-  type:                exitcode-stdio-1.0
-  hs-source-dirs:      test
-  main-is:             Lecture5Tests.hs
-  build-depends:
-      base
-    , containers
-    , hspec
-    , http-client
-    , http-client-tls
-    , servant
-    , servant-client
-    , text
-    , PracticalHaskell
-  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
-  default-language:    Haskell2010
-
-test-suite lecture-6-tests
-  type:                exitcode-stdio-1.0
-  hs-source-dirs:      test
-  main-is:             Lecture6Tests.hs
-  other-modules:
-    TestUtils
-  build-depends:
-      base
-    , directory
-    , hspec
-    , http-client
-    , http-client-tls
-    , persistent
-    , servant
-    , servant-client
-    , tasty-hunit
-    , time
-    , PracticalHaskell
-  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
-  default-language:    Haskell2010
-
-test-suite lecture-7-tests
-  type:                exitcode-stdio-1.0
-  hs-source-dirs:      test
-  main-is:             Lecture7Tests.hs
-  other-modules:
-      TestUtils
-  build-depends:
-      base
-    , directory
-    , hspec
-    , tasty-hunit
-    , PracticalHaskell
-  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
-  default-language:    Haskell2010
-
-test-suite lecture-8-tests
-  type:                exitcode-stdio-1.0
-  hs-source-dirs:      test
-  main-is:             Lecture8Tests.hs
-  other-modules:
-    TestUtils
-  build-depends:
-      base
-    , directory
-    , hspec
-    , persistent
-    , tasty-hunit
-    , text
-    , PracticalHaskell
-  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
-  default-language:    Haskell2010
-
-test-suite lecture-9-tests
-  type:                exitcode-stdio-1.0
-  hs-source-dirs:      test
-  main-is:             Lecture9Tests.hs
-  build-depends:       base
-                     , aeson
-                     , persistent
-                     , tasty
-                     , tasty-hunit
-                     , text
-                     , time
-                     , PracticalHaskell
-  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
-  default-language:    Haskell2010
-
-test-suite final-server-tests
-  type:                exitcode-stdio-1.0
-  hs-source-dirs:      test
-  main-is:             FinalServerTests.hs
-  other-modules:
-    TestUtils
-  build-depends:       base
-                     , hspec
-                     , tasty
-                     , tasty-hunit
-                     , directory
-                     , text
-                     , time
-                     , PracticalHaskell
-  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
-  default-language:    Haskell2010
