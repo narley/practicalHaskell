@@ -1,8 +1,11 @@
 module LandingModel exposing (..)
 
-type alias LandingModel = ()
+import SchemaTypes exposing (..)
+
+type alias LandingModel =
+  {}
 
 initLandingModel : LandingModel
-initLandingModel = ()
+initLandingModel = LandingModel
 
-type alias LandingMessage = ()
+type LandingMessage = LandingMessage

@@ -1,8 +1,11 @@
 module LoginModel exposing (..)
 
-type alias LoginModel = ()
+import SchemaTypes exposing (..)
 
-type alias LoginMessage = ()
+type alias LoginModel =
+  {}
 
 initLoginModel : LoginModel
-initLoginModel = ()
+initLoginModel = LoginModel
+
+type LoginMessage = LoginMessage

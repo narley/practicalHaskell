@@ -1,8 +1,11 @@
 module ArticleModel exposing (..)
 
-type alias ArticleModel = ()
+import SchemaTypes exposing (..)
+
+type alias ArticleModel =
+  {}
 
 initArticleModel : ArticleModel
-initArticleModel = ()
+initArticleModel = ArticleModel
 
-type alias ArticleMessage = ()
+type ArticleMessage = ArticleMessage
