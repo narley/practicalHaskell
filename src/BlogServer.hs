@@ -171,7 +171,7 @@ fullServer conn = usersServer conn :<|> articlesServer conn
 type StaticContentApi =
   "static" :> Raw :<|>
   "login" :> Get '[HTML] RawHtml :<|>
-  "articles" :> Capture "article_id" Int64 :> Get '[HTML] RawHtml :<|>
+  "blog" :> Capture "article_id" Int64 :> Get '[HTML] RawHtml :<|>
   Get '[HTML] RawHtml
 
 staticServer :: Server StaticContentApi
