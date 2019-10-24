@@ -1,6 +1,7 @@
 import Browser
 import Browser.Navigation exposing (pushUrl, load)
 import Html exposing (..)
+import Time exposing (..)
 import Url
 
 import ArticleView exposing (..)
@@ -14,7 +15,7 @@ main = Browser.application
   { init = (\_ initialUrl initialKey -> (initModel initialKey initialUrl, pushUrl initialKey (Url.toString initialUrl)))
   , view = view
   , update = update
-  , subscriptions = \_ -> Sub.none
+  , subscriptions = subscriptions
   , onUrlRequest = RequestedUrl
   , onUrlChange = ChangedUrl
   }
@@ -35,7 +36,8 @@ update msg m = case msg of
     Browser.Internal url -> (m, pushUrl m.navigationKey (Url.toString url))
   ChangedUrl u ->
     let nextPage = parseUrl u
-        nextCommand = Cmd.none
+        nextCommand = case nextPage of
+          _ -> Cmd.none
     in  ({m | currentPage = nextPage}, nextCommand)
   LandingMsg landingMessage ->
     let (newLandingModel, cmd) = landingUpdate landingMessage (m.landingModel)
@@ -46,3 +48,6 @@ update msg m = case msg of
   LoginMsg loginMessage ->
     let (newLoginModel, cmd) = loginUpdate loginMessage (m.loginModel)
     in  ({m | loginModel = newLoginModel}, Cmd.map LoginMsg cmd)
+
+subscriptions: AppModel -> Sub AppMessage
+subscriptions _ = Sub.none

@@ -3,12 +3,20 @@ module Model exposing (..)
 import Browser exposing (UrlRequest)
 import Browser.Navigation exposing (Key)
 
+import Time exposing (Posix)
 import Url exposing (..)
 import Url.Parser exposing (Parser, (</>), int, map, oneOf, s, top, parse, string)
 
 import ArticleModel exposing (..)
 import LandingModel exposing (..)
 import LoginModel exposing (..)
+import SchemaTypes exposing (..)
+
+hostString: String
+hostString = "localhost"
+
+portNum: Maybe Int
+portNum = Just 8080
 
 type Route =
   Landing |
@@ -19,7 +27,7 @@ type Route =
 routeParser : Parser (Route -> a) a
 routeParser = oneOf
   [ map Landing top
-  , map ArticlePage (s "articles" </> int)
+  , map ArticlePage (s "blog" </> int)
   , map LoginPage (s "login")
   ]
 
