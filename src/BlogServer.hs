@@ -205,8 +205,8 @@ blogApi = Proxy
 blogServer :: ConnectionString -> Server BlogApi
 blogServer conn = fullServer conn :<|> staticServer
 
-addAllOriginsMiddleware :: Application -> Application
-addAllOriginsMiddleware baseApp req responseFunc = baseApp req newResponseFunc
+addElmMiddleware :: Application -> Application
+addElmMiddleware baseApp req responseFunc = baseApp req newResponseFunc
   where
     newResponseFunc :: Response -> IO ResponseReceived
     newResponseFunc = responseFunc . (addOriginsAllowed . addHeadersAllowed)
@@ -220,4 +220,24 @@ addHeadersAllowed = mapResponseHeaders $
   (:) ("Access-Control-Allow-Headers", "content-type")
 
 runServer :: IO ()
-runServer = run 8080 ((addAllOriginsMiddleware . (provideOptions fullCRUD)) (serve blogApi (blogServer localConnString)))
+runServer = run 8080 ((addElmMiddleware . (provideOptions fullCRUD)) (serve blogApi (blogServer localConnString)))
+
+{- MODIFICATIONS FOR ELM
+ -
+ - By default, Elm does a few things with HTTP requests around Access Control,
+ - or Control Origin Resource Sharing (CORS).
+ -
+ - To make our Servant server compatible with Elm, we need to do a few things.
+ -
+ - 1. We need to allow all origins for access control. This means modifying all
+ -    requests with the header "Access-Control-Allow-Origin": "*"
+ - 2. We need to allow content type as a header field. For this, we add another header to each request:
+ -    "Access-Control-Allow-Headers": "content-type"
+ -
+ - We add both these using "Middleware", a layer that sits on our application and can modify the
+ - incoming requests. See the expressions "addElmMiddleware", "addOriginsAllowed" and "addHeadersAllowed"
+ -
+ - 3. We also need to permit requests with the type "Options". When posting data, Elm sends
+ -    "pre-flight" options requests to check the endpoint for validity. We add these to our API using
+ -    the "provideOptions" function that you see in our final server definition.
+ -}
