@@ -1,8 +1,11 @@
 module BlogLanding exposing (..)
 
 import Browser
+import Set exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Html.Events exposing (..)
+import Random exposing (..)
 import Time exposing (..)
 
 type alias Article =
@@ -11,11 +14,15 @@ type alias Article =
   , articleBody: String
   }
 
-type alias BlogLandingModel = List Article
-type BlogLandingMessage = BlogLandingMessage
+type alias BlogLandingModel =
+  { currentArticles: List Article
+  }
+
+type BlogLandingMessage =
+  NoMessage
 
 main : Program () BlogLandingModel BlogLandingMessage
-main = Browser.sandbox {init = initialBlogModel, view = view, update = update}
+main = Browser.sandbox {init = BlogLandingModel initialArticles, view = view, update = update}
 
 view : BlogLandingModel -> Html BlogLandingMessage
 view articles = div [] []
@@ -23,8 +30,8 @@ view articles = div [] []
 update : BlogLandingMessage -> BlogLandingModel -> BlogLandingModel
 update _ m = m
 
-initialBlogModel : List Article
-initialBlogModel =
+initialArticles : List Article
+initialArticles =
   [ { articleId = 1
     , articleTitle = "The Number One Reason You Should Program in Haskell"
     , articleBody = "There are a lot of different programming languages out there. But most of them aren't as good as Haskell for a lot of different reasons."

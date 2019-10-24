@@ -5,11 +5,11 @@ import Json.Decode as D
 import List exposing (range, map, sum)
 import Time exposing (..)
 
-jsonDecPosix : Decoder Posix
-jsonDecPosix = succeed (millisToPosix 0)
+jsonDecPosix : D.Decoder Posix
+jsonDecPosix = D.succeed (millisToPosix 0)
 
-jsonEncPosix : Posix -> Json.Encode.Value
-jsonEncPosix posixTime = Json.Encode.int (posixToMillis posixTime)
+jsonEncPosix : Posix -> E.Value
+jsonEncPosix posixTime = E.int (posixToMillis posixTime)
 
 type alias Iso8601Elements =
   { year : Int
