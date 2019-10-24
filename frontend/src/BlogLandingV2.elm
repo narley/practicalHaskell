@@ -2,15 +2,23 @@ module BlogLandingFinal exposing (..)
 
 import Browser
 import Html exposing (..)
+import Html.Attributes exposing (..)
+import Http exposing (..)
+import Json.Decode exposing (list)
+import Url exposing (..)
+import Url.Builder exposing (..)
 
 import SchemaTypes exposing (..)
 
-type alias BlogLandingModel = List Article
+type alias BlogLandingModel =
+  { currentArticles: List (Entity Article)
+  }
+
 type BlogLandingMessage = NoMessage
 
 main : Program () BlogLandingModel BlogLandingMessage
 main = Browser.application
-  { init = (\_ _ _ -> ([], Cmd.none))
+  { init = (\_ _ _ -> (BlogLandingModel [], Cmd.none))
   , view = view
   , update = update
   , subscriptions = \_ -> Sub.none

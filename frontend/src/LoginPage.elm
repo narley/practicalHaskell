@@ -4,6 +4,10 @@ import Browser
 import Html exposing (..)
 import Html.Attributes exposing (value, style)
 import Html.Events exposing (onClick, onInput)
+import Http exposing (..)
+import Json.Decode exposing (list)
+import Url exposing (..)
+import Url.Builder exposing (..)
 
 import SchemaTypes exposing (..)
 
