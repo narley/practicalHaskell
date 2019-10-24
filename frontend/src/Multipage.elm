@@ -1,11 +1,12 @@
 module Multipage exposing (..)
 
 import Browser
-import Browser.Navigation exposing (Key)
-import Html exposing (text, div, Html, button, br, input, h1, p, h2)
-import Html.Attributes exposing (value)
+import Browser.Navigation exposing (Key, pushUrl, load)
+import Html exposing (..)
+import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
 
+import Json.Decode
 import Http exposing (..)
 import Url exposing (..)
 import Url.Builder exposing (..)
@@ -20,7 +21,7 @@ type alias Model =
 
 type Message = NoMessage
 
-type Route = Landing | Article Int | LoginPage | NotFound404
+type Route = Landing | Article Int | Login | NotFound404
 
 routeParser : Parser (Route -> a) a
 routeParser = oneOf []
@@ -33,16 +34,10 @@ main = Browser.application
   { init = (\_ initialUrl initialKey -> (Model initialKey (parseUrl initialUrl), Cmd.none))
   , view = view
   , update = update
-  , subscriptions = subscriptions
-  , onUrlRequest = urlRequest
-  , onUrlChange = changeUrl
+  , subscriptions = \_ -> Sub.none
+  , onUrlRequest = \_ -> NoMessage
+  , onUrlChange = \_ -> NoMessage
   }
-
-urlRequest : Browser.UrlRequest -> Message
-urlRequest _ = NoMessage
-
-changeUrl : Url -> Message
-changeUrl _ = NoMessage
 
 view : Model -> Browser.Document Message
 view _ =
@@ -55,6 +50,3 @@ view404 = div [] [text "Sorry, this page doesn't exit!"]
 update : Message -> Model -> (Model, Cmd Message)
 update msg model = case msg of
   NoMessage -> (model, Cmd.none)
-
-subscriptions : Model -> Sub Message
-subscriptions _ = Sub.none
