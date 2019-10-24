@@ -9,6 +9,7 @@ import Control.Monad.Except (throwError)
 import Control.Monad.IO.Class (liftIO)
 import Crypto.PasswordStore (verifyPassword)
 import Data.Aeson
+import qualified Data.ByteString.Char8 as BSC
 import qualified Data.ByteString.Lazy as BSL
 import Data.Int (Int64)
 import qualified Data.Map as Map
@@ -27,6 +28,7 @@ import Network.Wai.Middleware.Servant.Options (provideOptions)
 import Servant.API
 import Servant.Server
 import Servant.Server.StaticFiles (serveDirectoryWebApp)
+import System.Environment (lookupEnv)
 
 
 import JWTHelpers (makeJWTCookie)
@@ -170,12 +172,14 @@ fullServer conn = usersServer conn :<|> articlesServer conn
 
 type StaticContentApi =
   "static" :> Raw :<|>
+  "blog" :> "static" :> Raw :<|>
   "login" :> Get '[HTML] RawHtml :<|>
   "blog" :> Capture "article_id" Int64 :> Get '[HTML] RawHtml :<|>
   Get '[HTML] RawHtml
 
 staticServer :: Server StaticContentApi
 staticServer =
+  serveDirectoryWebApp "frontend/static" :<|>
   serveDirectoryWebApp "frontend/static" :<|>
   loadIndex :<|>
   (\_ -> loadIndex) :<|>
@@ -220,7 +224,16 @@ addHeadersAllowed = mapResponseHeaders $
   (:) ("Access-Control-Allow-Headers", "content-type")
 
 runServer :: IO ()
-runServer = run 8080 ((addElmMiddleware . (provideOptions fullCRUD)) (serve blogApi (blogServer localConnString)))
+runServer = do
+  portString <- lookupEnv "PORT"
+  let portNum = case portString of
+        Nothing -> 8080
+        Just s -> read s
+  connString <- lookupEnv "DATABASE_URL"
+  let conn = case connString of
+        Nothing -> localConnString
+        Just s -> BSC.pack s
+  run 8080 ((addElmMiddleware . (provideOptions fullCRUD)) (serve blogApi (blogServer conn)))
 
 {- MODIFICATIONS FOR ELM
  -
