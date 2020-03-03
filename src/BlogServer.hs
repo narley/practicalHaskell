@@ -147,8 +147,7 @@ type CommentsCRUD = "api" :> "comments" :>
     Capture "cid" Int64 :> Get '[JSON] (Maybe Comment) :<|>
     "create" :> ReqBody '[JSON] Comment :> Post '[JSON] Int64 :<|>
     "delete" :> Capture "cid" Int64 :> Delete '[JSON] () :<|>
-    "update" :> Capture "cid" Int64 :> ReqBody '[JSON] Comment :> Put '[JSON] () :<|>
-    "newest" :> QueryParam "limit" Int64 :> Get '[JSON] [Entity Comment]
+    "update" :> Capture "cid" Int64 :> ReqBody '[JSON] Comment :> Put '[JSON] ()
   )
 
 getAllComments :: ConnectionString -> Handler [Entity Comment]
@@ -174,17 +173,13 @@ updateComment conn cid comment = liftIO $ runAction conn $ update (toSqlKey cid)
       , CommentSubmittedAt =. commentSubmittedAt comment
       ]
 
-newestComments :: ConnectionString -> Maybe Int64 -> Handler [Entity Comment]
-newestComments conn uid = undefined
-
 commentsServer :: ConnectionString -> Server CommentsCRUD
 commentsServer conn =
   getAllComments conn :<|>
   retrieveComment conn :<|>
   createComment conn :<|>
   deleteComment conn :<|>
-  updateComment conn :<|>
-  newestComments conn
+  updateComment conn
 
 type FullCRUD = UsersCRUD :<|> ArticlesCRUD :<|> CommentsCRUD
 
