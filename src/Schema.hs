@@ -126,7 +126,7 @@ instance ToJSON (Entity User) where
 instance FromJSON (Entity User) where
   parseJSON = withObject "User" $ \o -> do
     user <- o .: "value"
-    uid <- o .: "id"
+    uid <- o .: "key"
     return $ Entity (toSqlKey uid) user
 
 articlePairs :: Article -> [Pair]
@@ -157,7 +157,7 @@ instance ToJSON (Entity Article) where
 instance FromJSON (Entity Article) where
   parseJSON = withObject "Article" $ \o -> do
     article <- o .: "value"
-    aid <- o .: "id"
+    aid <- o .: "key"
     return $ Entity (toSqlKey aid) article
 
 commentPairs :: Comment -> [Pair]
@@ -188,5 +188,5 @@ instance ToJSON (Entity Comment) where
 instance FromJSON (Entity Comment) where
   parseJSON = withObject "Comment" $ \o -> do
     comment <- o .: "value"
-    cid <- o .: "id"
+    cid <- o .: "key"
     return $ Entity (toSqlKey cid) comment

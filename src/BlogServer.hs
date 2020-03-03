@@ -97,10 +97,10 @@ usersServer conn =
 
 type ArticlesCRUD = "api" :> "articles" :>
   ( "all" :> Get '[JSON] [Entity Article] :<|>
-    Capture "uid" Int64 :> Get '[JSON] (Maybe Article) :<|>
+    Capture "aid" Int64 :> Get '[JSON] (Maybe Article) :<|>
     "create" :> ReqBody '[JSON] Article :> Post '[JSON] Int64 :<|>
-    "delete" :> Capture "uid" Int64 :> Delete '[JSON] () :<|>
-    "update" :> Capture "uid" Int64 :> ReqBody '[JSON] Article :> Put '[JSON] () :<|>
+    "delete" :> Capture "aid" Int64 :> Delete '[JSON] () :<|>
+    "update" :> Capture "aid" Int64 :> ReqBody '[JSON] Article :> Put '[JSON] () :<|>
     "newest" :> QueryParam "limit" Int64 :> Get '[JSON] [Entity Article]
   )
 
@@ -142,32 +142,57 @@ articlesServer conn =
   updateArticle conn :<|>
   newestArticles conn
 
--- type CommentsCRUD = ...
+type CommentsCRUD = "api" :> "comments" :>
+  ( "all" :> Get '[JSON] [Entity Comment] :<|>
+    Capture "cid" Int64 :> Get '[JSON] (Maybe Comment) :<|>
+    "create" :> ReqBody '[JSON] Comment :> Post '[JSON] Int64 :<|>
+    "delete" :> Capture "cid" Int64 :> Delete '[JSON] () :<|>
+    "update" :> Capture "cid" Int64 :> ReqBody '[JSON] Comment :> Put '[JSON] () :<|>
+    "newest" :> QueryParam "limit" Int64 :> Get '[JSON] [Entity Comment]
+  )
+
 getAllComments :: ConnectionString -> Handler [Entity Comment]
-getAllComments conn = undefined
+getAllComments conn = liftIO $ runAction conn $ select . from $ \comments -> return comments
 
 retrieveComment :: ConnectionString -> Int64 -> Handler (Maybe Comment)
-retrieveComment conn = undefined
+retrieveComment conn cid = liftIO $ runAction conn $ get (toSqlKey cid)
 
 createComment :: ConnectionString -> Comment -> Handler Int64
-createComment conn = undefined
+createComment conn comment = fromSqlKey <$> liftIO (runAction conn $ insert comment)
 
 deleteComment :: ConnectionString -> Int64 -> Handler ()
-deleteComment conn = undefined
+deleteComment conn cid = liftIO (runAction conn $ delete (toSqlKey cid :: Key Comment))
 
 updateComment :: ConnectionString -> Int64 -> Comment -> Handler ()
-updateComment conn = undefined
+updateComment conn cid comment = liftIO $ runAction conn $ update (toSqlKey cid) commentUpdates
+  where
+    commentUpdates :: [Update Comment]
+    commentUpdates =
+      [ CommentUserId =. commentUserId comment
+      , CommentArticleId =. commentArticleId comment
+      , CommentBody =. commentBody comment
+      , CommentSubmittedAt =. commentSubmittedAt comment
+      ]
 
--- commentsServer :: ConnectionString -> Server CommentsCRUD
+newestComments :: ConnectionString -> Maybe Int64 -> Handler [Entity Comment]
+newestComments conn uid = undefined
 
--- TODO Add your new CRUD types to this type!
-type FullCRUD = UsersCRUD :<|> ArticlesCRUD
+commentsServer :: ConnectionString -> Server CommentsCRUD
+commentsServer conn =
+  getAllComments conn :<|>
+  retrieveComment conn :<|>
+  createComment conn :<|>
+  deleteComment conn :<|>
+  updateComment conn :<|>
+  newestComments conn
+
+type FullCRUD = UsersCRUD :<|> ArticlesCRUD :<|> CommentsCRUD
 
 fullCRUD :: Proxy FullCRUD
 fullCRUD = Proxy
 
 fullServer :: ConnectionString -> Server FullCRUD
-fullServer conn = usersServer conn :<|> articlesServer conn
+fullServer conn = usersServer conn :<|> articlesServer conn :<|> commentsServer conn
 
 
 type StaticContentApi =
