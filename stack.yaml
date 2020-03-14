@@ -41,7 +41,7 @@ packages:
 extra-deps:
   - esqueleto-2.6.0
   - git: https://github.com/jhb563/persistent-migration.git
-    commit: 9f9c5035efe
+    commit: 9f9c5035efe58da8f58eb80e106f1271d2a13c17
 
 # Override default flag values for local packages and extra-deps
 # flags: {}
