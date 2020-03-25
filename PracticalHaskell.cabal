@@ -186,6 +186,7 @@ test-suite lecture-10-tests
   hs-source-dirs:      test
   main-is:             Lecture10Tests.hs
   build-depends:       base
+                     , persistent
                      , tasty
                      , tasty-hunit
                      , text
