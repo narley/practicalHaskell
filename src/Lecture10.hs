@@ -46,7 +46,7 @@ makeClone :: IO ()
 makeClone = do
   [Entity _ user] <- runAction localConnString (selectList [] [LimitTo 1])
   newKey <- runAction localConnString $
-    insert (User ("Bob") (userEmail user) (userAge user))
+    insert (User (userName user) (userEmail user) (userAge user))
   print newKey
 
 deleteNewUser :: Int64 -> IO ()
