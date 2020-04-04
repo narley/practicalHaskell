@@ -101,9 +101,9 @@ daysPerMonth year month = case month of
 isLeapYear : Int -> Bool
 isLeapYear x = if modBy 4 x /= 0
   then False
-  else if modBy x 100 /= 0
+  else if modBy 100 x /= 0
     then True
-    else modBy x 500 == 0
+    else modBy 400 x == 0
 
 unixEpochYear : Int
 unixEpochYear = 1970
