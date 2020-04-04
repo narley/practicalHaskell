@@ -65,7 +65,7 @@ userServer conn =
 authCheck :: ConnectionString -> BasicAuthData -> IO (BasicAuthResult Int64)
 authCheck conn (BasicAuthData email password) = undefined
 
-adminAuthCheck :: ConnectionString -> BasicAuthData -> IO AdminUserId
+adminAuthCheck :: ConnectionString -> BasicAuthData -> IO (BasicAuthResult AdminUserId)
 adminAuthCheck conn (BasicAuthData email password) = undefined
 
 authContext :: ConnectionString -> Context '[]
