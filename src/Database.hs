@@ -9,7 +9,7 @@ import Database.Persist.Postgresql (runMigration, ConnectionString, withPostgres
 import Schema (migrateAll)
 
 localConnString :: ConnectionString
-localConnString = "host='localhost' port=5432 dbname='mmh' user='postgres' password='postgres'"
+localConnString = "host='localhost' port=5432 dbname='mmh' user='mmh' password='mmh'"
 
 migrateDB :: ConnectionString -> IO ()
 migrateDB connString = runAction connString (runMigration migrateAll)

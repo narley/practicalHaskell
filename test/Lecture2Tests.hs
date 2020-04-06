@@ -13,7 +13,7 @@ import PGUtils ()
 
 main :: IO ()
 main = do
-  pgConn <- PG.connectPostgreSQL "host='localhost' port=5432 dbname='mmh' user='postgres' password='postgres'"
+  pgConn <- PG.connectPostgreSQL "host='localhost' port=5432 dbname='mmh' user='mmh' password='mmh'"
   sqliteConn <- SQLite.open "local-dbs/lecture-1-2.db"
   defaultMain $ testGroup "Lecture 2 Tests"
     [ usersPGTest pgConn
