@@ -11,19 +11,30 @@ import Database (runAction, localConnString)
 import Schema
 
 myUser :: User
-myUser = undefined
+myUser = User
+  { userName = "Chris"
+  , userEmail = "chris@mail.com"
+  , userAge = 30
+  }
 
 myArticle :: Article
-myArticle = undefined
+myArticle = Article
+  { articleTitle = "Intro to Haskell"
+  , articleBody = "Intro to Haskell body"
+  , articlePublishedAt = posixSecondsToUTCTime 1584309368012
+  }
 
 myUserEntity :: Entity User
-myUserEntity = undefined
+myUserEntity = Entity (toSqlKey 1) myUser
 
 myArticleEntity :: Entity Article
-myArticleEntity = undefined
+myArticleEntity = Entity (toSqlKey 1) myArticle
 
 fetchAllUsers :: IO [Entity User]
 fetchAllUsers = runAction localConnString $ selectList [] []
 
 printAllKeys :: Handle -> IO ()
-printAllKeys handle = undefined
+printAllKeys handle = do
+  users <- fetchAllUsers
+  let keys = map (fromSqlKey . entityKey) users
+  hPrint handle keys
