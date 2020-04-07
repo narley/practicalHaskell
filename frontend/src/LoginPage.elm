@@ -45,8 +45,8 @@ view {currentLoginInfo, lastLoginResult} =
 
 update : LoginPageMessage -> LoginPageModel -> (LoginPageModel, Cmd LoginPageMessage)
 update msg ({currentLoginInfo, lastLoginResult} as m) = case msg of
-  ChangedEmail email -> (LoginPageModel (LoginInfo email currentLoginInfo.loginInfoUsername) lastLoginResult, Cmd.none)
-  ChangedPassword password -> (LoginPageModel (LoginInfo currentLoginInfo.loginInfoPassword password) lastLoginResult, Cmd.none)
+  ChangedEmail email -> (LoginPageModel (LoginInfo email currentLoginInfo.loginInfoPassword) lastLoginResult, Cmd.none)
+  ChangedPassword password -> (LoginPageModel (LoginInfo currentLoginInfo.loginInfoUsername password) lastLoginResult, Cmd.none)
   PressedSubmit -> (m, Cmd.none)
   NoMessage -> (m, Cmd.none)
 
