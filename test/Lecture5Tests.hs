@@ -6,9 +6,9 @@ import Data.Int (Int64)
 import Data.List (sortBy)
 import Data.Text (Text)
 import Data.Time.Clock.POSIX (posixSecondsToUTCTime)
-import Database.Persist.Sql (toSqlKey, entityKey, Entity(..))
+import Database.Persist.Sql (toSqlKey, fromSqlKey, entityKey, Entity(..))
 import Test.Tasty (defaultMain, testGroup, TestTree)
-import Test.Tasty.HUnit (testCase, (@?=))
+import Test.Tasty.HUnit (testCase, (@?=), assertBool)
 
 import Lecture5
 import Schema
@@ -26,9 +26,11 @@ fetch100Test = testCase "Fetch 100 Test" $ do
 lastYearsArticlesTest :: TestTree
 lastYearsArticlesTest = testCase "Last Year's Articles Test" $ do
   articles <- lastYearsArticles
-  let trueArticles = sortBy sortByTitle expectedArticles
-  length articles @?= length trueArticles
-  mapM_ (\(a1, a2) -> entityKey a1 @?= entityKey a2) (zip articles trueArticles)
+  length articles @?= length expectedArticles
+  -- Check article ids are in a reasonable order
+  let fetchedIds = (fromSqlKey . entityKey) <$> articles
+  assertBool ("Article order isn't correct. Correct order: " ++ show testIdsInOrder ++ ". Returned order: " ++ show fetchedIds ++ ". Can also swap 80 and 31")
+    (fetchedIds == testIdsInOrder || fetchedIds == testIdsInOrder2)
 
 getYoungUsersTest :: TestTree
 getYoungUsersTest = testCase "Get Young Users Test" $ do
@@ -39,8 +41,11 @@ mkArticleEntity :: (Int64, Text, Text, Integer) -> Entity Article
 mkArticleEntity (id_, title, body, time) =
   Entity (toSqlKey id_) (Article title body (posixSecondsToUTCTime (fromInteger time)))
 
-sortByTitle :: Entity Article -> Entity Article -> Ordering
-sortByTitle (Entity _ a1) (Entity _ a2) = compare (articleTitle a1) (articleTitle a2)
+testIdsInOrder :: [Int64]
+testIdsInOrder = [61,69,33,59,16,53,36,9,10,72,35,21,100,49,54,65,40,42,23,64,30,43,20,86,56,84,99,31,80,51,13,26,83,94,44,11,7,57,66,89,2]
+
+testIdsInOrder2 :: [Int64]
+testIdsInOrder2 = [61,69,33,59,16,53,36,9,10,72,35,21,100,49,54,65,40,42,23,64,30,43,20,86,56,84,99,80,31,51,13,26,83,94,44,11,7,57,66,89,2]
 
 expectedArticles :: [Entity Article]
 expectedArticles = mkArticleEntity <$>
