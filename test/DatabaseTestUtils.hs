@@ -17,7 +17,7 @@ rq = runAction localConnString
 
 mkComment :: (Int64, Int64, Int64, Integer, Text) -> Entity Comment
 mkComment (cid, uid, aid, ts, body) = Entity (toSqlKey cid) $
-  Comment 
+  Comment
     { commentBody = body
     , commentUserId = (toSqlKey uid)
     , commentArticleId = (toSqlKey aid)

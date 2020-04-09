@@ -26,6 +26,8 @@ PTH.share [PTH.mkPersist PTH.sqlSettings, PTH.mkMigrate "migrateAll"] [PTH.persi
     name Text
     email Text
     age Int
+    -- Exercise 10.d
+    UniqueNameEmail name email
     deriving Show Read Eq
 
   Article sql=articles
@@ -42,6 +44,14 @@ PTH.share [PTH.mkPersist PTH.sqlSettings, PTH.mkMigrate "migrateAll"] [PTH.persi
     articleId ArticleId
     deriving Show Read Eq
 
+-- Exercise 10.a
+  ArticleReaction sql=articleReactions
+    articleId ArticleId
+    userId UserId Maybe
+    type ReactionType
+    metadata Metadata
+    deriving Show Read Eq
+
 |]
 
 -- Exercise 9.b
@@ -50,6 +60,9 @@ deriveJSON (defaultOptions { fieldLabelModifier = dropXAndLowerFirst 4 }) ''User
 deriveJSON (defaultOptions { fieldLabelModifier = dropXAndLowerFirst 7 }) ''Article
 
 deriveJSON (defaultOptions { fieldLabelModifier = dropXAndLowerFirst 7 }) ''Comment
+
+-- Exercise 10.a
+deriveJSON (defaultOptions { fieldLabelModifier = dropXAndLowerFirst 15 }) ''ArticleReaction
 
 
 -- Exercise 9.a
