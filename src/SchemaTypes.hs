@@ -7,7 +7,12 @@ import Database.Persist.TH
 import           Data.Aeson (ToJSON(..), FromJSON(..), Value(..), (.=), object, (.:), withObject, withArray)
 import Data.Text
 
-data ReactionType = Like | Love | Dislike
+data ReactionType
+  = Like
+  | Love
+  | Dislike
+  -- Exercise 11.f
+  -- | Surprised
   deriving (Show, Read, Eq)
 
 -- Exercise 10.a

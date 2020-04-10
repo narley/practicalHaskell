@@ -42,6 +42,8 @@ PTH.share [PTH.mkPersist PTH.sqlSettings, PTH.mkMigrate "migrateAll"] [PTH.persi
     submittedAt UTCTime
     userId UserId
     articleId ArticleId
+-- Exercise 11.b / 11.d
+    rating Int default=3
     deriving Show Read Eq
 
 -- Exercise 10.a
