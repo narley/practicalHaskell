@@ -9,6 +9,7 @@ import Data.Int (Int64)
 import qualified Data.Map as Map
 import Data.Proxy (Proxy(..))
 import Data.Text (Text)
+import Data.Maybe
 import Network.Wai.Handler.Warp (run)
 import Servant.API
 import Servant.Server
@@ -19,7 +20,9 @@ import BasicServerTypes
 type BasicAPI =
   "api" :> "version" :> Get '[JSON] Int :<|>
   "api" :> "name" :> Get '[JSON] Text :<|>
-  "api" :> "description" :> Get '[JSON] Text
+  "api" :> "description" :> Get '[JSON] Text :<|>
+  "api" :> "libraries" :> Get '[JSON] Text :<|>
+  "api" :> "num_users" :> Get '[JSON] Int
 
 basicAPI :: Proxy BasicAPI
 basicAPI = Proxy :: Proxy BasicAPI
@@ -33,14 +36,29 @@ nameHandler = return "Basic Server"
 descriptionHandler :: Handler Text
 descriptionHandler = return "A basic server we constructed using Servant"
 
+librariesHandler :: Handler Text
+librariesHandler = return "This server uses Servant"
+
+numUsersHandler :: Handler Int
+numUsersHandler = return 1
+
 basicServer :: Server BasicAPI
 basicServer =
   versionHandler :<|>
   nameHandler :<|>
-  descriptionHandler
+  descriptionHandler :<|>
+  librariesHandler :<|>
+  numUsersHandler
+
+getPort :: IO Int
+getPort = do
+  port <- lookupEnv "BASIC_SERVER_PORT"
+  return $ read $ fromMaybe "8080" port
 
 runServer :: IO ()
-runServer = run 8080 (serve basicAPI basicServer)
+runServer = do
+  port <- getPort
+  run port (serve basicAPI basicServer)
 
 nameDictionary :: Map.Map Int64 Text
 nameDictionary = Map.fromList
