@@ -19,8 +19,8 @@ import BasicServerTypes
 
 type BasicAPI =
   "api" :> "version" :> Get '[JSON] Int :<|>
-  "api" :> "name" :> Get '[JSON] Text :<|>
-  "api" :> "description" :> Get '[JSON] Text :<|>
+  "api" :> "name" :> Capture "user_id" BasicServerUserId :> Get '[JSON] Text :<|>
+  "api" :> "description" :> "brief" :> Get '[JSON] DescriptionResponse :<|>
   "api" :> "libraries" :> Get '[JSON] Text :<|>
   "api" :> "num_users" :> Get '[JSON] Int
 
@@ -30,11 +30,17 @@ basicAPI = Proxy :: Proxy BasicAPI
 versionHandler :: Handler Int
 versionHandler = return 2
 
-nameHandler :: Handler Text
-nameHandler = return "Basic Server"
+nameHandler :: BasicServerUserId -> Handler Text
+nameHandler (BasicServerUserId uid) =
+  let maybeUser = Map.lookup uid nameDictionary
+  in
+    case maybeUser of
+      Just user -> return user
+      Nothing -> throwError $ err404
+        { errBody = "That user doesn't exist!" }
 
-descriptionHandler :: Handler Text
-descriptionHandler = return "A basic server we constructed using Servant"
+descriptionHandler :: Handler DescriptionResponse
+descriptionHandler = return $ DescriptionResponse "A basic server we constructed using Servant"
 
 librariesHandler :: Handler Text
 librariesHandler = return "This server uses Servant"
