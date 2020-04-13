@@ -16,11 +16,75 @@ import Servant.Server
 import Schema
 
 -- TODO: Fill in this type and the proxy!
--- type RestAPI = ...
--- restAPI :: Proxy RestAPI
+type RestAPI =
+  "api" :> "users" :> Get '[JSON] [User] :<|>
+  "api" :> "users" :> Capture "id" Int64 :> Get '[JSON] User :<|>
+  "api" :> "users" :> "filter" :> QueryParam "age" Int :> QueryParams "emails" Text :> Get '[JSON] [(Int64, User)] :<|>
+  "api" :> "users" :> "create" :> ReqBody '[JSON] User :> Post '[JSON] Int64 :<|>
+  "api" :> "users" :> "delete" :> Capture "id" Int64 :> Delete '[JSON] ()
 
--- runRestAPI :: IO ()
--- runRestAPI = run 8080 (serve restAPI restServer)
+restAPI :: Proxy RestAPI
+restAPI = Proxy :: Proxy RestAPI
+
+usersHandler :: Handler [User]
+usersHandler =
+  let users = snd <$> Map.toList nameDictionary
+  in
+    return users
+
+userHandler :: Int64 -> Handler User
+userHandler uid =
+  let maybeUser = Map.lookup uid nameDictionary
+  in
+    case maybeUser of
+      Just user -> return user
+      Nothing -> throwError $ err404
+        { errBody = "That user doesn't exist!" }
+
+usersAgeEmailHandler :: Maybe Int -> [Text] -> Handler [(Int64, User)]
+usersAgeEmailHandler maybeAge emails =
+  let
+    users = Map.toList nameDictionary
+    filteredUsers = filter byEmail $ filter byAge users
+  in
+    return filteredUsers
+  where
+    byAge :: (Int64, User) -> Bool
+    byAge (_, User _ _ age) =
+      case maybeAge of
+        Just age' -> age >= age'
+        Nothing -> True
+    byEmail :: (Int64, User) -> Bool
+    byEmail (_, User _ email _) =
+      case emails of
+        xs@(_:_) -> email `elem` xs
+        [] -> True
+
+usersCreate :: User -> Handler Int64
+usersCreate user =
+  return 7
+
+usersDelete :: Int64 -> Handler ()
+usersDelete uid =
+  let maybeUser = Map.lookup uid nameDictionary
+  in
+    case maybeUser of
+      Just user -> do
+        liftIO $ print user
+        return ()
+      Nothing -> throwError $ err404
+        { errBody = "That user doesn't exist!"}
+
+restServer :: Server RestAPI
+restServer =
+  usersHandler :<|>
+  userHandler :<|>
+  usersAgeEmailHandler :<|>
+  usersCreate :<|>
+  usersDelete
+
+runRestAPI :: IO ()
+runRestAPI = run 8080 (serve restAPI restServer)
 
 nameDictionary :: Map.Map Int64 User
 nameDictionary = Map.fromList
