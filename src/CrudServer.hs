@@ -20,13 +20,14 @@ import Servant.Server
 
 import Schema
 
-type UsersCRUD = "users" :>
-  ( "all" :> Get '[JSON] [Entity User] :<|>
-    Capture "uid" Int64 :> Get '[JSON] (Maybe User) :<|>
-    "create" :> ReqBody '[JSON] User :> Post '[JSON] Int64 :<|>
-    "delete" :> Capture "uid" Int64 :> Delete '[JSON] () :<|>
-    "update" :> Capture "uid" Int64 :> ReqBody '[JSON] User :> Put '[JSON] ()
-  )
+type UsersCRUD = "users" :> CRUD User
+-- type UsersCRUD = "users" :>
+--   ( "all" :> Get '[JSON] [Entity User] :<|>
+--     Capture "uid" Int64 :> Get '[JSON] (Maybe User) :<|>
+--     "create" :> ReqBody '[JSON] User :> Post '[JSON] Int64 :<|>
+--     "delete" :> Capture "uid" Int64 :> Delete '[JSON] () :<|>
+--     "update" :> Capture "uid" Int64 :> ReqBody '[JSON] User :> Put '[JSON] ()
+--   )
 
 getAllUsers :: ConnectionString -> Handler [Entity User]
 getAllUsers conn = liftIO $ runAction conn $ select . from $ \users -> return users
@@ -60,53 +61,116 @@ usersServer conn =
 
 -- TODO Fill in these types, handler definitions, and add them to the Full API and Server at the bottom
 
--- type ArticlesCRUD = ...
+type ArticlesCRUD = "articles" :> CRUD Article
+-- type ArticlesCRUD = "articles" :>
+--   ( "all" :> Get '[JSON] [Entity Article] :<|>
+--     Capture "aid" Int64 :> Get '[JSON] (Maybe Article) :<|>
+--     "create" :> ReqBody '[JSON] Article :> Post '[JSON] Int64 :<|>
+--     "delete" :> Capture "aid" Int64 :> Delete '[JSON] () :<|>
+--     "update" :> Capture "aid" Int64 :> ReqBody '[JSON] Article :> Put '[JSON] ()
+--   )
+
 getAllArticles :: ConnectionString -> Handler [Entity Article]
-getAllArticles conn = undefined
+getAllArticles conn =
+  liftIO $ runAction conn $ select . from $ \articles -> return articles
 
 retrieveArticle :: ConnectionString -> Int64 -> Handler (Maybe Article)
-retrieveArticle conn = undefined
+retrieveArticle conn aid =
+  liftIO $ runAction conn $ get (toSqlKey aid)
 
 createArticle :: ConnectionString -> Article -> Handler Int64
-createArticle conn = undefined
+createArticle conn article =
+  fromSqlKey <$> liftIO (runAction conn $ insert article)
 
 deleteArticle :: ConnectionString -> Int64 -> Handler ()
-deleteArticle conn = undefined
+deleteArticle conn aid =
+  liftIO $ runAction conn $ delete (toSqlKey aid :: Key Article)
 
 updateArticle :: ConnectionString -> Int64 -> Article -> Handler ()
-updateArticle conn = undefined
+updateArticle conn aid article =
+  liftIO $ runAction conn $ update (toSqlKey aid) articleUpdates
+  where
+    articleUpdates :: [Update Article]
+    articleUpdates =
+      [ ArticleTitle =. articleTitle article
+      , ArticleBody =. articleBody article
+      , ArticlePublishedAt =. articlePublishedAt article
+      , ArticleAuthorId =. articleAuthorId article
+      ]
 
--- articlesServer :: ConnectionString -> Server ArticlesCRUD
+articlesServer :: ConnectionString -> Server ArticlesCRUD
+articlesServer conn =
+  getAllArticles conn :<|>
+  retrieveArticle conn :<|>
+  createArticle conn :<|>
+  deleteArticle conn :<|>
+  updateArticle conn
 
--- type CommentsCRUD = ...
+type CommentsCRUD = "comments" :> CRUD Comment
+-- type CommentsCRUD = "comments" :>
+--   ( "all" :> Get '[JSON] [Entity Comment] :<|>
+--     Capture "cid" Int64 :> Get '[JSON] (Maybe Comment) :<|>
+--     "create" :> ReqBody '[JSON] Comment :> Post '[JSON] Int64 :<|>
+--     "delete" :> Capture "cid" Int64 :> Delete '[JSON] () :<|>
+--     "update" :> Capture "cid" Int64 :> ReqBody '[JSON] Comment :> Put '[JSON] ()
+--   )
+
 getAllComments :: ConnectionString -> Handler [Entity Comment]
-getAllComments conn = undefined
+getAllComments conn =
+  liftIO $ runAction conn $ select . from $ \comments -> return comments
 
 retrieveComment :: ConnectionString -> Int64 -> Handler (Maybe Comment)
-retrieveComment conn = undefined
+retrieveComment conn cid =
+  liftIO $ runAction conn $ get (toSqlKey cid)
 
 createComment :: ConnectionString -> Comment -> Handler Int64
-createComment conn = undefined
+createComment conn comment =
+  fromSqlKey <$> liftIO (runAction conn $ insert comment)
 
 deleteComment :: ConnectionString -> Int64 -> Handler ()
-deleteComment conn = undefined
+deleteComment conn cid =
+  liftIO $ runAction conn $ delete (toSqlKey cid :: Key Comment)
 
 updateComment :: ConnectionString -> Int64 -> Comment -> Handler ()
-updateComment conn = undefined
+updateComment conn cid comment =
+  liftIO $ runAction conn $ update (toSqlKey cid) commentUpdates
+  where
+    commentUpdates :: [Update Comment]
+    commentUpdates =
+      [ CommentUserId =. commentUserId comment
+      , CommentArticleId =. commentArticleId comment
+      , CommentBody =. commentBody comment
+      , CommentSubmittedAt =. commentSubmittedAt comment
+      ]
 
--- commentsServer :: ConnectionString -> Server CommentsCRUD
+commentsServer :: ConnectionString -> Server CommentsCRUD
+commentsServer conn =
+  getAllComments conn :<|>
+  retrieveComment conn :<|>
+  createComment conn :<|>
+  deleteComment conn :<|>
+  updateComment conn
 
 -- TODO Add your new CRUD types to this type!
-type FullCRUD = UsersCRUD
+type FullCRUD = UsersCRUD :<|> ArticlesCRUD :<|> CommentsCRUD
 
 fullCRUD :: Proxy FullCRUD
 fullCRUD = Proxy
 
 fullServer :: ConnectionString -> Server FullCRUD
-fullServer = usersServer
+fullServer conn =
+  usersServer conn :<|>
+  articlesServer conn :<|>
+  commentsServer conn
 
 runServer :: IO ()
 runServer = run 8080 (serve fullCRUD (fullServer localConnString))
 
 -- TODO Parameterize the idea of a CRUD type!
--- type CRUD = ???
+type CRUD a =
+  ( "all" :> Get '[JSON] [Entity a] :<|>
+    Capture "uid" Int64 :> Get '[JSON] (Maybe a) :<|>
+    "create" :> ReqBody '[JSON] a :> Post '[JSON] Int64 :<|>
+    "delete" :> Capture "uid" Int64 :> Delete '[JSON] () :<|>
+    "update" :> Capture "uid" Int64 :> ReqBody '[JSON] a :> Put '[JSON] ()
+  )
