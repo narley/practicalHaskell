@@ -57,6 +57,7 @@ PTH.share [PTH.mkPersist PTH.sqlSettings, PTH.mkMigrate "migrateAll"] [PTH.persi
     hashString ByteString
     userType Text
     UniqueUserId userId
+    deriving Show Read Eq
 
   LoginToken sql=login_tokens
     userId UserId
