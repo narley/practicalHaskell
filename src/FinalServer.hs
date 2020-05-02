@@ -82,7 +82,10 @@ runServer = do
   let portNum = case portString of
         Nothing -> 8080
         Just s -> read s
-  let conn = localConnString
+  databaseURL <- lookupEnv "DATABASE_URL"
+  let conn = case databaseURL of
+        Nothing -> localConnString
+        Just url -> read ("\"" <> url <> "\"") :: C.ByteString
   run portNum (serveWithContext basicAPI (authContext conn) (basicServer conn))
 
 helloClient :: ClientM Text
