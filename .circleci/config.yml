@@ -10,7 +10,7 @@ jobs:
           command: stack setup
       - run:
           name: Build
-          command: stack build
+          command: stack build --jobs 1
       - run:
           name: Run tests
           command: stack build PracticalHaskell:test:final-server-tests
