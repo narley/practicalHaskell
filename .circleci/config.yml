@@ -5,6 +5,9 @@ jobs:
       - image: fpco/stack-build:lts-12.13
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - cci-practicalHaskell-v1-{{checksum "stack.yaml"}}-{{checksum "PracticalHaskell.cabal"}}
       - run:
           name: Resolve/Update Dependencies
           command: stack setup
@@ -14,3 +17,6 @@ jobs:
       - run:
           name: Run tests
           command: stack build PracticalHaskell:test:final-server-tests
+      - save_cache:
+          key: cci-practicalHaskell-v1-{{checksum "stack.yaml"}}-{{checksum "PracticalHaskell.cabal"}}
+          paths: ["/root/.stack", ".stack-work"]
