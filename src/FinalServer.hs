@@ -26,6 +26,7 @@ import System.Environment (lookupEnv)
 import Database (localConnString, runAction)
 import Schema
 
+
 type BasicAPI =
   "hello" :> Get '[JSON] Text :<|>
   "create" :> ReqBody '[JSON] (User, Text) :> Post '[JSON] Int64 :<|>
