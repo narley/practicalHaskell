@@ -7,6 +7,8 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Random exposing (..)
 import Time exposing (..)
+import String exposing (..)
+import List exposing (..)
 
 type alias Article =
   { articleId: Int
@@ -25,7 +27,23 @@ main : Program () BlogLandingModel BlogLandingMessage
 main = Browser.sandbox {init = BlogLandingModel initialArticles, view = view, update = update}
 
 view : BlogLandingModel -> Html BlogLandingMessage
-view articles = div [] []
+view articles =
+    div []
+        (h1 [] [ text "Blog Previews" ]
+          :: List.map articleBlock articles.currentArticles
+        )
+
+flipAppend : String -> String -> String
+flipAppend xs ys = ys ++ xs
+
+articleBlock : Article -> Html BlogLandingMessage
+articleBlock {articleId, articleTitle, articleBody} =
+    div [ style "border-style" "solid"
+        , style "margin" "10px"
+        ]
+        [ h2 [] [ text articleTitle ]
+        , p [] [(text << flipAppend "..." << left 50) articleBody ]
+        ]
 
 update : BlogLandingMessage -> BlogLandingModel -> BlogLandingModel
 update _ m = m
