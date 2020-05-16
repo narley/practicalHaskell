@@ -10,6 +10,7 @@ import Set exposing (..)
 import String exposing (..)
 import Time exposing (..)
 import Task exposing (..)
+import SchemaTypes exposing (..)
 
 type alias Article =
     { articleId : Int
